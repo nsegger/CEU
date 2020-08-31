@@ -4,8 +4,8 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :p:119:p, comp logo:::p:281:p, space :p:194:p, par l {seq {comp userInput:::p:260:p, space ::131:x}, seq {par t {comp label3::::260:x, comp loginButton::t::260:x, comp pwInput::l:::x, seq l {par t {comp userLabel::l:p::p, comp pwLabel::l:p::p}, space :0:137:x}}, space :p:131:p}}}, seq t {space ::642:x, comp logoName:::p::p, space :p:193:p}}"
-			"$verticalGroup": "par l {seq t {space ::90:x, comp logoName:::p::p, space :::p, par l:::p {comp logo:::p:281:p, seq {comp userLabel:::p::p, space :::p, comp userInput:::p:38:p, space :p:17:p, comp pwLabel:::p::p, space :::p, comp pwInput:::p:38:p, space :p:35:p, comp loginButton:::p:38:p, space :::x, comp label3:::p::p}}, space :p:130:p}}"
+			"$horizontalGroup": "par l {seq {space :p:119:p, comp logo:::p:281:p, space :p:194:p, par t {comp registerLabel::::260:x, comp loginButton::t::260:x, seq l {par t {comp userLabel::l:p::p, comp pwLabel::l:p::p}, space :0:137:x}, comp pwInput::l::260:x, comp userInput::::260:x}, space :p:131:p}, seq t {space :226:642:x, comp logoName:::p::p, space :p:193:p}}"
+			"$verticalGroup": "par l {seq t {space ::90:x, comp logoName:::p::p, space :::p, par l:::p {comp logo:::p:281:p, seq {comp userLabel:::p::p, space :::p, comp userInput:::p:38:p, space :p:17:p, comp pwLabel:::p::p, space :::p, comp pwInput:::p:38:p, space :p:35:p, comp loginButton:::p:38:p, space :::x, comp registerLabel:::p::p}}, space :p:130:p}}"
 		} ) {
 			name: "this"
 			add( new FormComponent( "javax.swing.JLabel" ) {
@@ -23,10 +23,10 @@ new FormModel {
 				"text": "Nome de usuário"
 				"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Montserrat Medium", 0, 14, true )
 			} )
-			add( new FormComponent( "javax.swing.JTextField" ) {
+			add( new FormComponent( "screens.common.RoundJPasswordField" ) {
 				name: "userInput"
 			} )
-			add( new FormComponent( "javax.swing.JTextField" ) {
+			add( new FormComponent( "screens.common.RoundJPasswordField" ) {
 				name: "pwInput"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
@@ -34,18 +34,21 @@ new FormModel {
 				"text": "Senha"
 				"font": #SwingDerivedFont0
 			} )
-			add( new FormComponent( "javax.swing.JButton" ) {
+			add( new FormComponent( "screens.common.RoundJButton" ) {
 				name: "loginButton"
 				"text": "Login"
 				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat", 1, 12, true )
 				"borderPainted": false
 			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label3"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "registerLabel"
 				"text": "Não tem conta ainda? Cadastre-se"
 				"horizontalAlignment": 0
 				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat Medium", 0, 14, true )
 				"foreground": new java.awt.Color( 148, 88, 214, 255 )
+				"borderPainted": false
+				"contentAreaFilled": false
+				"focusable": false
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

@@ -6,8 +6,12 @@ import java.awt.geom.RoundRectangle2D;
 
 public class RoundJButton extends JButton {
     private Shape shape;
-    private final int radius;
-    private final Color color;
+    private int radius;
+    private Color color;
+
+    public RoundJButton() {
+        this(5, new Color(148, 88, 214));
+    }
 
     public RoundJButton(int radius, Color color) {
         this.radius = radius;
@@ -15,6 +19,22 @@ public class RoundJButton extends JButton {
         setOpaque(false);
         setContentAreaFilled(false);
         setForeground(Color.WHITE);
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override

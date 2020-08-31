@@ -7,6 +7,7 @@ package screens.login;
 import core.ui.JFrameManager;
 import screens.Screen;
 import screens.common.RoundJButton;
+import screens.common.RoundJPasswordField;
 import screens.common.RoundJTextField;
 
 import java.awt.*;
@@ -29,8 +30,13 @@ public class Login extends Screen {
     public Login(JFrameManager frameManager, boolean showRegister) {
         super("CEU - Controle de Estoque Universal", frameManager);
         this.register = showRegister;
-        initComponents();
 
+        initComponents();
+        registerLabel.setFocusPainted(false);
+        registerLabel.setMargin(new Insets(0, 0, 0, 0));
+        registerLabel.setContentAreaFilled(false);
+        registerLabel.setBorderPainted(false);
+        registerLabel.setOpaque(false);
 
         try {
             BufferedImage cloudSvg = ImageIO.read(getClass().getResource("/resources/ceu.svg"));
@@ -40,7 +46,6 @@ public class Login extends Screen {
         }
 
         registerLabel.addActionListener(this::labelMouseClicked);
-
         loginButton.addActionListener(this::loginMouseClicked);
 
         if (register) showRegister();
@@ -100,10 +105,10 @@ public class Login extends Screen {
         logo = new JLabel();
         logoName = new JLabel();
         userLabel = new JLabel();
-        userInput = new RoundJTextField(5);
-        pwInput = new RoundJTextField(5);
+        userInput = new RoundJPasswordField();
+        pwInput = new RoundJPasswordField();
         pwLabel = new JLabel();
-        loginButton = new RoundJButton(5, new Color(148, 88, 214));
+        loginButton = new RoundJButton();
         registerLabel = new JButton();
 
         //---- logo ----
@@ -125,17 +130,16 @@ public class Login extends Screen {
         //---- loginButton ----
         loginButton.setText("Login");
         loginButton.setFont(new Font("Montserrat", loginButton.getFont().getStyle() | Font.BOLD, 12));
+        loginButton.setBorderPainted(false);
 
         //---- registerLabel ----
         registerLabel.setText("N\u00e3o tem conta ainda? Cadastre-se");
         registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         registerLabel.setFont(new Font("Montserrat Medium", registerLabel.getFont().getStyle(), 14));
         registerLabel.setForeground(new Color(148, 88, 214));
-        registerLabel.setFocusPainted(false);
-        registerLabel.setMargin(new Insets(0, 0, 0, 0));
-        registerLabel.setContentAreaFilled(false);
         registerLabel.setBorderPainted(false);
-        registerLabel.setOpaque(false);
+        registerLabel.setContentAreaFilled(false);
+        registerLabel.setFocusable(false);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -145,23 +149,19 @@ public class Login extends Screen {
                     .addGap(119, 119, 119)
                     .addComponent(logo, GroupLayout.PREFERRED_SIZE, 281, GroupLayout.PREFERRED_SIZE)
                     .addGap(194, 194, 194)
-                    .addGroup(layout.createParallelGroup()
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(userInput, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(131, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addComponent(registerLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                        .addComponent(loginButton, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                        .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addComponent(registerLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                                .addComponent(loginButton, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                                .addComponent(pwInput, GroupLayout.Alignment.LEADING)
-                                .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addComponent(userLabel, GroupLayout.Alignment.LEADING)
-                                        .addComponent(pwLabel, GroupLayout.Alignment.LEADING))
-                                    .addGap(0, 137, Short.MAX_VALUE)))
-                            .addGap(131, 131, 131))))
+                                .addComponent(userLabel, GroupLayout.Alignment.LEADING)
+                                .addComponent(pwLabel, GroupLayout.Alignment.LEADING))
+                            .addGap(0, 137, Short.MAX_VALUE))
+                        .addComponent(pwInput, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                        .addComponent(userInput, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                    .addGap(131, 131, 131))
                 .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(642, Short.MAX_VALUE)
+                    .addGap(226, 642, Short.MAX_VALUE)
                     .addComponent(logoName)
                     .addGap(193, 193, 193))
         );
@@ -195,10 +195,10 @@ public class Login extends Screen {
     private JLabel logo;
     private JLabel logoName;
     private JLabel userLabel;
-    private JTextField userInput;
-    private JTextField pwInput;
+    private RoundJPasswordField userInput;
+    private RoundJPasswordField pwInput;
     private JLabel pwLabel;
-    private JButton loginButton;
+    private RoundJButton loginButton;
     private JButton registerLabel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

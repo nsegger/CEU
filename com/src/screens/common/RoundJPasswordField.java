@@ -4,15 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class RoundJTextField extends JTextField {
+public class RoundJPasswordField extends JPasswordField {
     private Shape shape;
     private int radius;
 
-    public RoundJTextField() {
+    public RoundJPasswordField() {
         this(5);
     }
 
-    public RoundJTextField(int radius) {
+    public RoundJPasswordField(int radius) {
         this.radius = radius;
         setOpaque(false);
     }
