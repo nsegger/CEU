@@ -37,6 +37,10 @@ public class JFrameManager {
         if (centerFrame) center();
     }
 
+    public void setTitle(String title) {
+        frame.setTitle(title);
+    }
+
     private ArrayList<Image> getIconList() {
         ArrayList<Image> imageList = new ArrayList<>();
 
