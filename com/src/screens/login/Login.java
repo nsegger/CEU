@@ -4,15 +4,16 @@
 
 package screens.login;
 
-import com.bulenkov.darcula.DarculaLaf;
 import core.ui.JFrameManager;
 import screens.Screen;
 import screens.common.RoundJButton;
 import screens.common.RoundJTextField;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -21,10 +22,15 @@ import javax.swing.GroupLayout;
  * @author Nicholas Segger
  */
 public class Login extends Screen {
+    private boolean register;
+    private final String loginTitle = "CEU - Controle de Estoque Universal";
+    private final String registerTitle = "CEU - Cadastro";
 
-    public Login(JFrameManager frameManager) {
+    public Login(JFrameManager frameManager, boolean showRegister) {
         super("CEU - Controle de Estoque Universal", frameManager);
+        this.register = showRegister;
         initComponents();
+
 
         try {
             BufferedImage cloudSvg = ImageIO.read(getClass().getResource("/resources/ceu.svg"));
@@ -32,6 +38,60 @@ public class Login extends Screen {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        registerLabel.addActionListener(this::labelMouseClicked);
+
+        loginButton.addActionListener(this::loginMouseClicked);
+
+        if (register) showRegister();
+    }
+
+    public Login (JFrameManager frameManager) {
+        this(frameManager, false);
+    }
+
+    private void loginMouseClicked(ActionEvent e) {
+        System.out.println("Trying to login");
+    }
+
+    private void labelMouseClicked(ActionEvent e) {
+        register = true;
+        showRegister();
+    }
+
+    private void registerMouseClicked(ActionEvent e) {
+        System.out.println("Trying to register");
+        register = false;
+        showRegister();
+    }
+
+    private void showRegister() {
+        System.out.println("Loading register screen");
+
+        SwingUtilities.invokeLater(() -> {
+            ActionListener[] listeners = loginButton.getActionListeners();
+            Arrays.stream(listeners).forEach(listener -> loginButton.removeActionListener(listener));
+
+            if (register) {
+                loginButton.setText("Cadastrar");
+
+                loginButton.addActionListener(this::registerMouseClicked);
+
+                registerLabel.setVisible(false);
+                registerLabel.setEnabled(false);
+
+                super.getFrameManager().setTitle(registerTitle);
+            } else {
+                loginButton.setText("Login");
+
+                loginButton.addActionListener(this::loginMouseClicked);
+
+                registerLabel.setVisible(true);
+                registerLabel.setEnabled(true);
+
+                super.getFrameManager().setTitle(loginTitle);
+            }
+        });
     }
 
     private void initComponents() {
@@ -44,8 +104,7 @@ public class Login extends Screen {
         pwInput = new RoundJTextField(5);
         pwLabel = new JLabel();
         loginButton = new RoundJButton(5, new Color(148, 88, 214));
-
-        label3 = new JLabel();
+        registerLabel = new JButton();
 
         //---- logo ----
         logo.setText(" ");
@@ -67,11 +126,16 @@ public class Login extends Screen {
         loginButton.setText("Login");
         loginButton.setFont(new Font("Montserrat", loginButton.getFont().getStyle() | Font.BOLD, 12));
 
-        //---- label3 ----
-        label3.setText("N\u00e3o tem conta ainda? Cadastre-se");
-        label3.setHorizontalAlignment(SwingConstants.CENTER);
-        label3.setFont(new Font("Montserrat Medium", label3.getFont().getStyle(), 14));
-        label3.setForeground(new Color(148, 88, 214));
+        //---- registerLabel ----
+        registerLabel.setText("N\u00e3o tem conta ainda? Cadastre-se");
+        registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        registerLabel.setFont(new Font("Montserrat Medium", registerLabel.getFont().getStyle(), 14));
+        registerLabel.setForeground(new Color(148, 88, 214));
+        registerLabel.setFocusPainted(false);
+        registerLabel.setMargin(new Insets(0, 0, 0, 0));
+        registerLabel.setContentAreaFilled(false);
+        registerLabel.setBorderPainted(false);
+        registerLabel.setOpaque(false);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -87,7 +151,7 @@ public class Login extends Screen {
                             .addContainerGap(131, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addComponent(label3, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                                .addComponent(registerLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                                 .addComponent(loginButton, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                                 .addComponent(pwInput, GroupLayout.Alignment.LEADING)
                                 .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -120,7 +184,7 @@ public class Login extends Screen {
                             .addGap(35, 35, 35)
                             .addComponent(loginButton, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(label3)))
+                            .addComponent(registerLabel)))
                     .addGap(130, 130, 130))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -135,6 +199,6 @@ public class Login extends Screen {
     private JTextField pwInput;
     private JLabel pwLabel;
     private JButton loginButton;
-    private JLabel label3;
+    private JButton registerLabel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
