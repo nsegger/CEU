@@ -9,6 +9,11 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicLookAndFeel;
 
 public class App {
+    private final JFrameManager frameManager;
+
+    public App() {
+        frameManager = new JFrameManager();
+    }
 
     public void run() {
         BasicLookAndFeel darcula = new DarculaLaf();
@@ -18,6 +23,10 @@ public class App {
             e.printStackTrace();
         }
 
-        JFrameManager frameManager = new JFrameManager(new Login());
+        frameManager.load(new Login(frameManager));
+    }
+
+    public JFrameManager getFrameManager() {
+        return frameManager;
     }
 }

@@ -13,18 +13,6 @@ import java.util.ArrayList;
 public class JFrameManager {
     private JFrame frame;
 
-    public JFrameManager(Screen initialPane) {
-        this(initialPane, true, initialPane.getWidth(), initialPane.getHeight());
-    }
-
-    public JFrameManager(Screen initialPane, boolean centerFrame) {
-        this(initialPane, centerFrame, initialPane.getWidth(), initialPane.getHeight());
-    }
-
-    public JFrameManager(Screen initialPane, boolean centerFrame, int width, int height) {
-        load(initialPane, centerFrame, width, height);
-    }
-
     public void load(Screen pane) {
         load(pane, true);
     }

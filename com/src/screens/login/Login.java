@@ -5,15 +5,14 @@
 package screens.login;
 
 import com.bulenkov.darcula.DarculaLaf;
+import core.ui.JFrameManager;
 import screens.Screen;
 import screens.common.RoundJButton;
 import screens.common.RoundJTextField;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -23,8 +22,8 @@ import javax.swing.GroupLayout;
  */
 public class Login extends Screen {
 
-    public Login() {
-        super("CEU - Controle de Estoque Universal");
+    public Login(JFrameManager frameManager) {
+        super("CEU - Controle de Estoque Universal", frameManager);
         initComponents();
 
         try {
