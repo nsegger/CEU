@@ -105,7 +105,7 @@ public class Login extends Screen {
         logo = new JLabel();
         logoName = new JLabel();
         userLabel = new JLabel();
-        userInput = new RoundJPasswordField();
+        userInput = new RoundJTextField();
         pwInput = new RoundJPasswordField();
         pwLabel = new JLabel();
         loginButton = new RoundJButton();
@@ -195,7 +195,7 @@ public class Login extends Screen {
     private JLabel logo;
     private JLabel logoName;
     private JLabel userLabel;
-    private RoundJPasswordField userInput;
+    private RoundJTextField userInput;
     private RoundJPasswordField pwInput;
     private JLabel pwLabel;
     private RoundJButton loginButton;

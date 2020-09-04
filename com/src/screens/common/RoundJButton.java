@@ -69,20 +69,20 @@ public class RoundJButton extends JButton {
             g.setColor(backgroundColor);
         }
 
-        g.fillRoundRect(0, 0, getSize().width-1, getSize().height-1, radius, radius);
+        g.fillRoundRect(0, 0, getSize().width - 1, getSize().height-1, radius, radius);
         super.paintComponent(g);
     }
 
     @Override
     protected void paintBorder(Graphics g) {
         g.setColor(getBackground());
-        g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, radius, radius);
+        g.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
     }
 
     @Override
     public boolean contains(int x, int y) {
         if (shape == null || !shape.getBounds().equals(getBounds())) {
-            shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, radius, radius);
+            shape = new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
         }
 
         return shape.contains(x, y);
