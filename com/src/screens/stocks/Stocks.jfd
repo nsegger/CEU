@@ -1,0 +1,46 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {comp stockScroll:::p:213:p, space :::x, comp startMessage:::p:774:p}, seq l {space :p:25:p, comp cloudIcon:::p:50:p, space u:::p, comp label2:::p::p, space :0:0:x}}"
+			"$verticalGroup": "par l {seq t {par l {seq {space :::p, comp label2:::p::p}, comp cloudIcon::l:p:42:p}, space :::x, comp stockScroll:::p:537:p}, seq l {space :p:277:p, comp startMessage:::p::p, space :::x}}"
+		} ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 985, 511 )
+			"preferredSize": new java.awt.Dimension( 985, 585 )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "stockScroll"
+				"horizontalScrollBarPolicy": 31
+				"viewportBorder": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "stockList"
+					"selectionMode": 0
+					"visibleRowCount": 6
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "startMessage"
+				"horizontalAlignment": 0
+				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat SemiBold", 0, 15, true )
+				"text": " "
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "cloudIcon"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "CEU"
+				"font": new com.jformdesigner.model.SwingDerivedFont( "Nova Round", 0, 24, true )
+				"foreground": new java.awt.Color( 148, 88, 214, 255 )
+				"horizontalAlignment": 0
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 1005, 585 )
+		} )
+	}
+}

@@ -9,11 +9,13 @@ import screens.Screen;
 import screens.common.RoundJButton;
 import screens.common.RoundJPasswordField;
 import screens.common.RoundJTextField;
+import screens.stocks.Stocks;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -56,7 +58,13 @@ public class Login extends Screen {
     }
 
     private void loginMouseClicked(ActionEvent e) {
-        System.out.println("Trying to login");
+        ArrayList<String> items = new ArrayList<>();
+        items.add("Estoque 1");
+        items.add("Dois");
+
+        Stocks stockScreen = new Stocks(getFrameManager(), "Crie um novo estoque para começar!", items);
+
+        getFrameManager().load(stockScreen);
     }
 
     private void labelMouseClicked(ActionEvent e) {
