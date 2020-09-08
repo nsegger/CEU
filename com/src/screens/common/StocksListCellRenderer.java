@@ -3,12 +3,13 @@ package screens.common;
 import javax.swing.*;
 import java.awt.*;
 
-public class StocksListCellRenderer implements ListCellRenderer<String> {
+public class StocksListCellRenderer extends JLabel implements ListCellRenderer<String> {
     private int hoveredIndex = -1;
-    private final JLabel label = new JLabel(" ", JLabel.CENTER);
 
     public StocksListCellRenderer() {
-        label.setOpaque(true);
+        setOpaque(true);
+        setHorizontalAlignment(CENTER);
+        setVerticalAlignment(CENTER);
     }
 
     @Override
@@ -16,18 +17,18 @@ public class StocksListCellRenderer implements ListCellRenderer<String> {
         StocksJList stocksList = (StocksJList) list;
 
         if (isSelected) {
-            label.setBackground(list.getSelectionBackground());
-            label.setForeground(list.getSelectionForeground());
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
         } else if (index == hoveredIndex) {
-            label.setBackground(stocksList.getHoveredColor());
+            setBackground(stocksList.getHoveredColor());
         } else {
-            label.setBackground(list.getBackground());
-            label.setForeground(list.getForeground());
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
         }
 
-        label.setText(value);
+        setText(value);
 
-        return label;
+        return this;
     }
 
     public void setHoveredIndex(int index) {
