@@ -4,18 +4,17 @@
 
 package screens.stocks;
 
+import java.awt.event.*;
 import core.ui.JFrameManager;
 import screens.Screen;
+import screens.common.*;
 import screens.common.StocksJList;
-import screens.common.StocksListCellRenderer;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import static javax.swing.SwingConstants.CENTER;
 
 /**
  * @author Nicholas Segger
@@ -39,6 +38,21 @@ public class Stocks extends Screen {
 
         initComponents();
         startMessage.setText(welcomeMessage);
+
+        stockPane.setVisible(false);
+
+        create.setFocusPainted(false);
+        create.setMargin(new Insets(0, 0, 0, 0));
+        create.setContentAreaFilled(false);
+        create.setBorderPainted(false);
+        create.setOpaque(false);
+
+        delete.setFocusPainted(false);
+        delete.setMargin(new Insets(0, 0, 0, 0));
+        delete.setContentAreaFilled(false);
+        delete.setBorderPainted(false);
+        delete.setOpaque(false);
+
         stockList.setModel(new AbstractListModel<>() {
             private final ArrayList<String> values = stocks;
 
@@ -52,6 +66,30 @@ public class Stocks extends Screen {
                 return values.get(index);
             }
         });
+        
+        stockList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                delete.setVisible(true);
+                stockPane.setVisible(true);
+                startMessage.setVisible(false);
+            }
+        });
+
+        buscar.addActionListener(e -> {
+            //TO-DO Search action
+        });
+
+        buscar.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                buscar.setText("");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                buscar.setText("\uD83D\uDD0D   Buscar");
+            }
+        });
 
         try {
             cloudIcon.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/resources/ceu-50x30.svg"))));
@@ -60,82 +98,191 @@ public class Stocks extends Screen {
         }
     }
 
+    private void addMouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void removeMouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void editMouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void generateStatsMouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void createMouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Nicholas Segger
-        stockScroll = new JScrollPane();
+        // Generated using JFormDesigner Evaluation license - awASAF ASD
+        listScroll = new JScrollPane();
         stockList = new StocksJList();
-        startMessage = new JLabel();
         cloudIcon = new JLabel();
         label2 = new JLabel();
+        create = new JButton();
+        delete = new JButton();
+        stockPane = new JPanel();
+        buscar = new RoundJTextField();
+        add = new RoundJButton();
+        remove = new RoundJButton();
+        edit = new RoundJButton();
+        tableScroll = new JScrollPane();
+        stockTable = new JTable();
+        generateStats = new RoundJButton();
+        startMessage = new JLabel();
 
         //======== this ========
-        setMinimumSize(new Dimension(985, 511));
-        setPreferredSize(new Dimension(985, 585));
+        setMinimumSize(new Dimension(983, 601));
+        setPreferredSize(new Dimension(983, 601));
+        setLayout(null);
 
-        //======== stockScroll ========
+        //======== listScroll ========
         {
-            stockScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            stockScroll.setViewportBorder(null);
-            stockScroll.setBorder(null);
+            listScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            listScroll.setViewportBorder(null);
+            listScroll.setBorder(null);
 
             //---- stockList ----
             stockList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             stockList.setVisibleRowCount(6);
             stockList.setBorder(null);
-            stockScroll.setViewportView(stockList);
+            listScroll.setViewportView(stockList);
         }
-
-        //---- startMessage ----
-        startMessage.setHorizontalAlignment(SwingConstants.CENTER);
-        startMessage.setFont(new Font("Montserrat SemiBold", startMessage.getFont().getStyle(), 15));
-        startMessage.setText(" ");
+        add(listScroll);
+        listScroll.setBounds(0, 64, 213, 537);
+        add(cloudIcon);
+        cloudIcon.setBounds(25, 0, 50, 42);
 
         //---- label2 ----
         label2.setText("CEU");
         label2.setFont(new Font("Nova Round", label2.getFont().getStyle(), 24));
         label2.setForeground(new Color(148, 88, 214));
         label2.setHorizontalAlignment(SwingConstants.CENTER);
+        add(label2);
+        label2.setBounds(new Rectangle(new Point(87, 6), label2.getPreferredSize()));
 
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(stockScroll, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(startMessage, GroupLayout.PREFERRED_SIZE, 774, GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(25, 25, 25)
-                    .addComponent(cloudIcon, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(label2)
-                    .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup()
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(label2))
-                        .addComponent(cloudIcon, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(stockScroll, GroupLayout.PREFERRED_SIZE, 537, GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(277, 277, 277)
-                    .addComponent(startMessage)
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        //---- create ----
+        create.setText("+");
+        create.setFont(new Font("Segoe UI", create.getFont().getStyle() | Font.BOLD, 19));
+        create.setForeground(new Color(42, 172, 22));
+        create.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                createMouseClicked(e);
+            }
+        });
+        add(create);
+        create.setBounds(160, 5, 45, 20);
+
+        //---- delete ----
+        delete.setText("-");
+        delete.setFont(new Font("Segoe UI", delete.getFont().getStyle() | Font.BOLD, 19));
+        delete.setForeground(new Color(172, 22, 22));
+        delete.setVisible(false);
+        add(delete);
+        delete.setBounds(160, 25, 45, 20);
+
+        //======== stockPane ========
+        {
+            stockPane.setBackground(new Color(36, 36, 36));
+            stockPane.setLayout(null);
+
+            //---- buscar ----
+            buscar.setHorizontalAlignment(SwingConstants.LEFT);
+            buscar.setText("\ud83d\udd0d   Buscar");
+            stockPane.add(buscar);
+            buscar.setBounds(27, 27, 181, 35);
+
+            //---- add ----
+            add.setText("Adicionar");
+            add.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    addMouseClicked(e);
+                }
+            });
+            stockPane.add(add);
+            add.setBounds(241, 27, 135, 35);
+
+            //---- remove ----
+            remove.setText("Remover");
+            remove.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    removeMouseClicked(e);
+                }
+            });
+            stockPane.add(remove);
+            remove.setBounds(409, 27, 135, 35);
+
+            //---- edit ----
+            edit.setText("Editar");
+            edit.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    editMouseClicked(e);
+                }
+            });
+            stockPane.add(edit);
+            edit.setBounds(577, 27, 135, 35);
+
+            //======== tableScroll ========
+            {
+
+                //---- stockTable ----
+                stockTable.setBorder(null);
+                tableScroll.setViewportView(stockTable);
+            }
+            stockPane.add(tableScroll);
+            tableScroll.setBounds(27, 92, 700, 432);
+
+            //---- generateStats ----
+            generateStats.setText("Gerar estat\u00edsticas");
+            generateStats.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    generateStatsMouseClicked(e);
+                }
+            });
+            stockPane.add(generateStats);
+            generateStats.setBounds(27, 555, 700, 35);
+        }
+        add(stockPane);
+        stockPane.setBounds(213, 0, 772, 600);
+
+        //---- startMessage ----
+        startMessage.setHorizontalAlignment(SwingConstants.CENTER);
+        startMessage.setFont(new Font("Montserrat SemiBold", startMessage.getFont().getStyle(), 15));
+        startMessage.setText(" ");
+        add(startMessage);
+        startMessage.setBounds(215, 290, 770, startMessage.getPreferredSize().height);
+
+        setPreferredSize(new Dimension(985, 600));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Nicholas Segger
-    private JScrollPane stockScroll;
+    // Generated using JFormDesigner Evaluation license - awASAF ASD
+    private JScrollPane listScroll;
     private StocksJList stockList;
-    private JLabel startMessage;
     private JLabel cloudIcon;
     private JLabel label2;
+    private JButton create;
+    private JButton delete;
+    private JPanel stockPane;
+    private RoundJTextField buscar;
+    private RoundJButton add;
+    private RoundJButton remove;
+    private RoundJButton edit;
+    private JScrollPane tableScroll;
+    private JTable stockTable;
+    private RoundJButton generateStats;
+    private JLabel startMessage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -3,15 +3,14 @@ JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.6" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {comp stockScroll:::p:213:p, space :::x, comp startMessage:::p:774:p}, seq l {space :p:25:p, comp cloudIcon:::p:50:p, space u:::p, comp label2:::p::p, space :0:0:x}}"
-			"$verticalGroup": "par l {seq t {par l {seq {space :::p, comp label2:::p::p}, comp cloudIcon::l:p:42:p}, space :::x, comp stockScroll:::p:537:p}, seq l {space :p:277:p, comp startMessage:::p::p, space :::x}}"
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
+			"autoSize": false
 		} ) {
 			name: "this"
-			"minimumSize": new java.awt.Dimension( 985, 511 )
-			"preferredSize": new java.awt.Dimension( 985, 585 )
+			"minimumSize": new java.awt.Dimension( 983, 601 )
+			"preferredSize": new java.awt.Dimension( 983, 601 )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "stockScroll"
+				name: "listScroll"
 				"horizontalScrollBarPolicy": 31
 				"viewportBorder": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
@@ -21,15 +20,17 @@ new FormModel {
 					"visibleRowCount": 6
 					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				} )
-			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "startMessage"
-				"horizontalAlignment": 0
-				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat SemiBold", 0, 15, true )
-				"text": " "
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"y": 64
+				"width": 213
+				"height": 537
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "cloudIcon"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 25
+				"width": 50
+				"height": 42
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label2"
@@ -37,10 +38,120 @@ new FormModel {
 				"font": new com.jformdesigner.model.SwingDerivedFont( "Nova Round", 0, 24, true )
 				"foreground": new java.awt.Color( 148, 88, 214, 255 )
 				"horizontalAlignment": 0
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 87
+				"y": 6
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "create"
+				"text": "+"
+				"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Segoe UI", 1, 19, true )
+				"foreground": new java.awt.Color( 42, 172, 22, 255 )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "createMouseClicked", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 160
+				"y": 5
+				"width": 45
+				"height": 20
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "delete"
+				"text": "-"
+				"font": #SwingDerivedFont0
+				"foreground": new java.awt.Color( 172, 22, 22, 255 )
+				"visible": false
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 160
+				"y": 25
+				"width": 45
+				"height": 20
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
+				"autoSize": false
+			} ) {
+				name: "stockPane"
+				"background": new java.awt.Color( 36, 36, 36, 255 )
+				add( new FormComponent( "screens.common.RoundJTextField" ) {
+					name: "buscar"
+					"horizontalAlignment": 2
+					"text": "\ud83d\udd0d   Buscar"
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 27
+					"y": 27
+					"width": 181
+					"height": 35
+				} )
+				add( new FormComponent( "screens.common.RoundJButton" ) {
+					name: "add"
+					"text": "Adicionar"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "addMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 241
+					"y": 27
+					"width": 135
+					"height": 35
+				} )
+				add( new FormComponent( "screens.common.RoundJButton" ) {
+					name: "remove"
+					"text": "Remover"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "removeMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 135
+					"height": 35
+					"x": 409
+					"y": 27
+				} )
+				add( new FormComponent( "screens.common.RoundJButton" ) {
+					name: "edit"
+					"text": "Editar"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "editMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 135
+					"height": 35
+					"x": 577
+					"y": 27
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "tableScroll"
+					add( new FormComponent( "javax.swing.JTable" ) {
+						name: "stockTable"
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 27
+					"y": 92
+					"width": 700
+					"height": 432
+				} )
+				add( new FormComponent( "screens.common.RoundJButton" ) {
+					name: "generateStats"
+					"text": "Gerar estatísticas"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "generateStatsMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 700
+					"height": 35
+					"x": 27
+					"y": 555
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 213
+				"y": 0
+				"width": 772
+				"height": 600
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "startMessage"
+				"horizontalAlignment": 0
+				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat SemiBold", 0, 15, true )
+				"text": " "
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 215
+				"y": 290
+				"width": 770
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 1005, 585 )
+			"size": new java.awt.Dimension( 985, 600 )
 		} )
 	}
 }
