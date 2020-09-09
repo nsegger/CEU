@@ -30,13 +30,21 @@ public class StockForm extends JDialog {
         }
     }
 
+    public void setNameField(String str) {
+        name.setText(str);
+    }
+
+    public void setAmountField(int n) {
+        amount.setValue(n);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - awASAF ASD
         name = new RoundJTextField();
         nameLabel = new JLabel();
         amountLabel = new JLabel();
-        spinner1 = new JSpinner();
+        amount = new JSpinner();
         add = new RoundJButton();
         logo = new JLabel();
 
@@ -59,8 +67,11 @@ public class StockForm extends JDialog {
         amountLabel.setFont(new Font("Montserrat", amountLabel.getFont().getStyle(), 14));
         contentPane.add(amountLabel);
         amountLabel.setBounds(new Rectangle(new Point(75, 335), amountLabel.getPreferredSize()));
-        contentPane.add(spinner1);
-        spinner1.setBounds(75, 370, spinner1.getPreferredSize().width, 35);
+
+        //---- amount ----
+        amount.setModel(new SpinnerNumberModel(0, 0, null, 1));
+        contentPane.add(amount);
+        amount.setBounds(75, 370, 80, 35);
 
         //---- add ----
         add.setText("Adicionar");
@@ -83,7 +94,7 @@ public class StockForm extends JDialog {
     private RoundJTextField name;
     private JLabel nameLabel;
     private JLabel amountLabel;
-    private JSpinner spinner1;
+    private JSpinner amount;
     private RoundJButton add;
     private JLabel logo;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

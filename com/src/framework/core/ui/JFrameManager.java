@@ -1,8 +1,10 @@
 package framework.core.ui;
 
+import app.product.Product;
 import framework.core.db.DatabaseInterface;
 import framework.Logger;
 import screens.Screen;
+import screens.stocks.StockForm;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -44,15 +46,19 @@ public class JFrameManager {
         Logger.info("Loaded screen " + pane.getClass().getSimpleName());
     }
 
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, Product product) {
+        loadModal(dialogClass, title, true, 0, 0, product);
+    }
+
     public void loadModal(Class<? extends JDialog> dialogClass, String title) {
         loadModal(dialogClass, title, true);
     }
 
     public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal) {
-        loadModal(dialogClass, title, centerModal, 0, 0);
+        loadModal(dialogClass, title, centerModal, 0, 0, null);
     }
 
-    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal, int width, int height) {
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal, int width, int height, Product product) {
         if (modal != null) modal.dispose();
 
         try {
@@ -62,6 +68,16 @@ public class JFrameManager {
             e.printStackTrace();
 
             return;
+        }
+
+        if (product != null) {
+            StockForm stockForm = (StockForm) modal;
+
+            stockForm.setNameField(product.getName());
+            stockForm.setAmountField(product.getAmount());
+
+            Logger.info("Set modal field \"Name\" to " + product.getName());
+            Logger.info("Set modal field \"Amount\" to " + product.getAmount());
         }
 
         modal.setTitle(title);

@@ -165,7 +165,21 @@ public class Stocks extends Screen {
     }
 
     private void editMouseClicked(MouseEvent e) {
-        getFrameManager().loadModal(StockForm.class, "CEU - Editar produto");
+
+        if (stockTable.getSelectedRowCount() != 1) {
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Selecione apenas UM produto para editar",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } else {
+            Product selectedProduct = products.get(stockTable.getSelectedRow());
+
+            SwingUtilities.invokeLater(() -> {
+                frameManager.loadModal(StockForm.class, "CEU - Editar produto", selectedProduct);
+            });
+        }
     }
 
     private void generateStatsMouseClicked(MouseEvent e) {
