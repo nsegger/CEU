@@ -17,14 +17,14 @@ public class ProductsJTable extends JTable implements MouseMotionListener {
     }
 
     public ProductsJTable(ProductsTableCellRenderer renderer) {
-        this(renderer, new Color(255, 255, 255));
+        this(renderer, new Color(48, 48, 48));
     }
 
     public ProductsJTable(ProductsTableCellRenderer renderer, Color hoveredColor) {
         this.hoveredColor = hoveredColor;
         this.renderer = renderer;
 
-        setDefaultRenderer(JLabel.class, renderer);
+        setDefaultRenderer(String.class, renderer);
         setSelectionBackground(new Color(36,36,36));
         setRowHeight(45);
 

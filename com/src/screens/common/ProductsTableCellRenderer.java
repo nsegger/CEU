@@ -12,7 +12,6 @@ public class ProductsTableCellRenderer extends JLabel implements TableCellRender
     public ProductsTableCellRenderer() {
         setOpaque(true);
         setHorizontalAlignment(CENTER);
-        setVerticalAlignment(CENTER);
     }
 
     @Override
@@ -28,6 +27,8 @@ public class ProductsTableCellRenderer extends JLabel implements TableCellRender
             setBackground(customTable.getBackground());
             setForeground(customTable.getForeground());
         }
+
+        setText(value.toString());
 
         return this;
     }
