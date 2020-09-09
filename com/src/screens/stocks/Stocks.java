@@ -7,7 +7,7 @@ package screens.stocks;
 import java.awt.event.*;
 
 import app.product.Product;
-import core.ui.JFrameManager;
+import framework.core.ui.JFrameManager;
 import framework.Logger;
 import screens.Screen;
 import screens.common.*;
@@ -90,6 +90,21 @@ public class Stocks extends Screen {
                     private final ArrayList<Product> values = products;
 
                     @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        return String.class;
+                    }
+
+                    @Override
+                    public String getColumnName(int column) {
+                        return switch (column) {
+                            case 0 -> "Nome";
+                            case 1 -> "Última atualização";
+                            case 2 -> "Quantidade";
+                            default -> "";
+                        };
+                    }
+
+                    @Override
                     public int getRowCount() {
                         return values.size();
                     }
@@ -104,7 +119,7 @@ public class Stocks extends Screen {
                         return switch (columnIndex) {
                             case 0 -> values.get(rowIndex).getName();
                             case 1 -> values.get(rowIndex).getLastUpdate().toString();
-                            case 2 -> values.get(rowIndex).getAmount();
+                            case 2 -> String.valueOf(values.get(rowIndex).getAmount());
                             default -> null;
                         };
                     }
@@ -200,7 +215,7 @@ public class Stocks extends Screen {
         add(listScroll);
         listScroll.setBounds(0, 64, 213, 537);
         add(cloudIcon);
-        cloudIcon.setBounds(25, 0, 50, 42);
+        cloudIcon.setBounds(25, 15, 50, 42);
 
         //---- label2 ----
         label2.setText("CEU");
@@ -208,7 +223,7 @@ public class Stocks extends Screen {
         label2.setForeground(new Color(148, 88, 214));
         label2.setHorizontalAlignment(SwingConstants.CENTER);
         add(label2);
-        label2.setBounds(new Rectangle(new Point(87, 6), label2.getPreferredSize()));
+        label2.setBounds(new Rectangle(new Point(90, 20), label2.getPreferredSize()));
 
         //---- create ----
         create.setText("+");
@@ -221,7 +236,7 @@ public class Stocks extends Screen {
             }
         });
         add(create);
-        create.setBounds(160, 5, 45, 20);
+        create.setBounds(160, 10, 45, 20);
 
         //---- delete ----
         delete.setText("-");
@@ -229,7 +244,7 @@ public class Stocks extends Screen {
         delete.setForeground(new Color(172, 22, 22));
         delete.setVisible(false);
         add(delete);
-        delete.setBounds(160, 25, 45, 20);
+        delete.setBounds(160, 30, 45, 20);
 
         //======== stockPane ========
         {
@@ -280,6 +295,8 @@ public class Stocks extends Screen {
 
                 //---- stockTable ----
                 stockTable.setBorder(null);
+                stockTable.setShowVerticalLines(false);
+                stockTable.setFont(new Font("Montserrat SemiBold", stockTable.getFont().getStyle(), 14));
                 tableScroll.setViewportView(stockTable);
             }
             stockPane.add(tableScroll);
@@ -294,7 +311,7 @@ public class Stocks extends Screen {
                 }
             });
             stockPane.add(generateStats);
-            generateStats.setBounds(27, 555, 700, 35);
+            generateStats.setBounds(27, 545, 700, 35);
         }
         add(stockPane);
         stockPane.setBounds(213, 0, 772, 600);

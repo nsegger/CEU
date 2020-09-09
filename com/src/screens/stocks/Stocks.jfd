@@ -31,6 +31,7 @@ new FormModel {
 				"x": 25
 				"width": 50
 				"height": 42
+				"y": 15
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label2"
@@ -39,8 +40,8 @@ new FormModel {
 				"foreground": new java.awt.Color( 148, 88, 214, 255 )
 				"horizontalAlignment": 0
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 87
-				"y": 6
+				"x": 90
+				"y": 20
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "create"
@@ -50,7 +51,7 @@ new FormModel {
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "createMouseClicked", true ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 160
-				"y": 5
+				"y": 10
 				"width": 45
 				"height": 20
 			} )
@@ -62,7 +63,7 @@ new FormModel {
 				"visible": false
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 160
-				"y": 25
+				"y": 30
 				"width": 45
 				"height": 20
 			} )
@@ -116,6 +117,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTable" ) {
 						name: "stockTable"
 						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"showVerticalLines": false
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat SemiBold", 0, 14, true )
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 					"x": 27
@@ -131,7 +134,7 @@ new FormModel {
 					"width": 700
 					"height": 35
 					"x": 27
-					"y": 555
+					"y": 545
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 213
