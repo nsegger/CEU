@@ -1,0 +1,70 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
+			"autoSize": false
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"resizable": false
+			add( new FormComponent( "screens.common.RoundJTextField" ) {
+				name: "name"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 75
+				"y": 270
+				"width": 351
+				"height": 35
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "nameLabel"
+				"text": "Nome"
+				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat", 0, 14, true )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 75
+				"y": 235
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "amountLabel"
+				"text": "Quantidade"
+				"font": new com.jformdesigner.model.SwingDerivedFont( "Montserrat", 0, 14, true )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 75
+				"y": 335
+			} )
+			add( new FormComponent( "javax.swing.JSpinner" ) {
+				name: "amount"
+				"model": new javax.swing.SpinnerNumberModel {
+					minimum: 0
+				}
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 75
+				"y": 370
+				"height": 35
+				"width": 80
+			} )
+			add( new FormComponent( "screens.common.RoundJButton" ) {
+				name: "add"
+				"text": "Adicionar"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 75
+				"y": 460
+				"width": 351
+				"height": 35
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "logo"
+				"text": " "
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 120
+				"y": 30
+				"width": 270
+				"height": 168
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 510, 560 )
+		} )
+	}
+}

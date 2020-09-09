@@ -7,17 +7,22 @@ import java.awt.geom.RoundRectangle2D;
 public class RoundJButton extends JButton {
     private Shape shape;
     private int radius;
-    private Color color;
+    private Color backgroundColor;
+    private Color pressedBackgroundColor;
+    private Color hoverBackgroundColor;
 
     public RoundJButton() {
-        this(5, new Color(148, 88, 214));
+        this(5, new Color(148, 88, 214), new Color(127, 46, 214), new Color(101, 36, 171));
     }
 
-    public RoundJButton(int radius, Color color) {
+    public RoundJButton(int radius, Color backgroundColor, Color hoverBackgroundColor, Color pressedBackgroundColor) {
         this.radius = radius;
-        this.color = color;
+        this.backgroundColor = backgroundColor;
+        this.hoverBackgroundColor = hoverBackgroundColor;
+        this.pressedBackgroundColor = pressedBackgroundColor;
         setOpaque(false);
         setContentAreaFilled(false);
+        setRolloverEnabled(true);
         setForeground(Color.WHITE);
     }
 
@@ -29,32 +34,55 @@ public class RoundJButton extends JButton {
         return radius;
     }
 
-    public Color getColor() {
-        return color;
+    public Color getBackgroundColor() {
+        return backgroundColor;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Color getHoverBackgroundColor() {
+        return hoverBackgroundColor;
+    }
+
+    public void setHoverBackgroundColor(Color hoverBackgroundColor) {
+        this.hoverBackgroundColor = hoverBackgroundColor;
+    }
+
+    public Color getPressedBackgroundColor() {
+        return pressedBackgroundColor;
+    }
+
+    public void setPressedBackgroundColor(Color pressedBackgroundColor) {
+        this.pressedBackgroundColor = pressedBackgroundColor;
     }
 
     @Override
     public void paintComponent(Graphics g)
     {
-        g.setColor(color);
-        g.fillRoundRect(0, 0, getSize().width-1, getSize().height-1, radius, radius);
+        if (getModel().isPressed()) {
+            g.setColor(pressedBackgroundColor);
+        } else if (getModel().isRollover()) {
+            g.setColor(hoverBackgroundColor);
+        } else {
+            g.setColor(backgroundColor);
+        }
+
+        g.fillRoundRect(0, 0, getSize().width - 1, getSize().height-1, radius, radius);
         super.paintComponent(g);
     }
 
     @Override
     protected void paintBorder(Graphics g) {
         g.setColor(getBackground());
-        g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, radius, radius);
+        g.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
     }
 
     @Override
     public boolean contains(int x, int y) {
         if (shape == null || !shape.getBounds().equals(getBounds())) {
-            shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, radius, radius);
+            shape = new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
         }
 
         return shape.contains(x, y);

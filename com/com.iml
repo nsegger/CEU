@@ -7,8 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="imageio" level="project" />
-    <orderEntry type="library" name="batik" level="project" />
-    <orderEntry type="library" name="darcula" level="project" />
+    <orderEntry type="library" exported="" name="imageio" level="project" />
+    <orderEntry type="library" exported="" name="batik" level="project" />
+    <orderEntry type="library" exported="" name="darcula" level="project" />
+    <orderEntry type="library" exported="" name="flyway-6.5" level="project" />
+    <orderEntry type="library" exported="" name="json" level="project" />
+    <orderEntry type="library" exported="" name="mysql-connector-java-8.0.21" level="project" />
   </component>
 </module>

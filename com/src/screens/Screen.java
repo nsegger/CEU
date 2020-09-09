@@ -1,11 +1,11 @@
 package screens;
 
-import core.ui.JFrameManager;
+import framework.core.ui.JFrameManager;
 
 import javax.swing.*;
 
 public class Screen extends JPanel {
-    private final JFrameManager frameManager;
+    protected final JFrameManager frameManager;
     private final String title;
 
     public Screen(String title, JFrameManager frameManager) {

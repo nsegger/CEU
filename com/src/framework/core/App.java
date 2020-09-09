@@ -1,7 +1,10 @@
-package core;
+package framework.core;
 
+import app.user.UserInterface;
 import com.bulenkov.darcula.DarculaLaf;
-import core.ui.JFrameManager;
+import framework.core.db.MySQL;
+import framework.core.ui.JFrameManager;
+import framework.Logger;
 import screens.login.Login;
 
 
@@ -22,6 +25,13 @@ public class App {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+
+        MySQL mysql = new MySQL();
+
+        Logger.initialization();
+
+        UserInterface userInterface = new UserInterface();
+
 
         frameManager.load(new Login(frameManager));
     }
