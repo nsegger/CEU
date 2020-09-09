@@ -5,7 +5,10 @@
 package screens.stocks;
 
 import java.awt.event.*;
+
+import app.product.Product;
 import core.ui.JFrameManager;
+import framework.Logger;
 import screens.Screen;
 import screens.common.*;
 import screens.common.StocksJList;
@@ -75,8 +78,10 @@ public class Stocks extends Screen {
             }
         });
 
+        // TODO Table model
+
         buscar.addActionListener(e -> {
-            //TO-DO Search action
+            // TODO Search action
         });
 
         buscar.addFocusListener(new FocusAdapter() {
@@ -99,7 +104,7 @@ public class Stocks extends Screen {
     }
 
     private void addMouseClicked(MouseEvent e) {
-        // TODO add your code here
+        getFrameManager().loadModal(StockForm.class, "CEU - Adicionar produto");
     }
 
     private void removeMouseClicked(MouseEvent e) {
@@ -107,7 +112,7 @@ public class Stocks extends Screen {
     }
 
     private void editMouseClicked(MouseEvent e) {
-        // TODO add your code here
+        getFrameManager().loadModal(StockForm.class, "CEU - Editar produto");
     }
 
     private void generateStatsMouseClicked(MouseEvent e) {
