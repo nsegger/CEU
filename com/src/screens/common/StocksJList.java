@@ -47,7 +47,7 @@ public class StocksJList extends JList<String> implements MouseMotionListener {
     private void isItemBeingHovered(MouseEvent e) {
         int index = locationToIndex(e.getPoint());
 
-        if (index != getSelectedIndex()) {
+        if (index != getSelectedIndex() && index != renderer.getHoveredIndex()) {
             renderer.setHoveredIndex(index);
             repaint();
         }
