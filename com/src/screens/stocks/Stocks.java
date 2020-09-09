@@ -16,8 +16,10 @@ import screens.common.StocksJList;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * @author Nicholas Segger
@@ -25,6 +27,7 @@ import javax.swing.*;
 public class Stocks extends Screen {
     private String welcomeMessage;
     private ArrayList<String> stocks;
+    ArrayList<Product> products;
 
     public Stocks(JFrameManager frameManager) {
         this(frameManager, "Crie um novo estoque para começar!", new ArrayList<>());
@@ -38,6 +41,7 @@ public class Stocks extends Screen {
         super("CEU - Estoques", frameManager);
         this.welcomeMessage = welcomeMessage;
         this.stocks = stocks;
+        this.products = new ArrayList<>();
 
         initComponents();
         startMessage.setText(welcomeMessage);
@@ -72,13 +76,47 @@ public class Stocks extends Screen {
         
         stockList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
+                Logger.info("StockJList value is now: " + stockList.getSelectedValue());
                 delete.setVisible(true);
                 stockPane.setVisible(true);
                 startMessage.setVisible(false);
+
+                products.clear();
+
+                products.add(new Product(0, "Produto 1", 20, 0, new Date()));
+                products.add(new Product(1, "Produto 2", 1, 0, new Date()));
+
+                stockTable.setModel(new AbstractTableModel() {
+                    private final ArrayList<Product> values = products;
+
+                    @Override
+                    public int getRowCount() {
+                        return values.size();
+                    }
+
+                    @Override
+                    public int getColumnCount() {
+                        return 3;
+                    }
+
+                    @Override
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        return switch (columnIndex) {
+                            case 0 -> values.get(rowIndex).getName();
+                            case 1 -> values.get(rowIndex).getLastUpdate().toString();
+                            case 2 -> values.get(rowIndex).getAmount();
+                            default -> null;
+                        };
+                    }
+                });
             }
         });
 
-        // TODO Table model
+        stockTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && stockTable.getSelectedRow() != -1) {
+                Logger.info("JTable selected value is: " + products.get(stockTable.getSelectedRow()).getName());
+            }
+        });
 
         buscar.addActionListener(e -> {
             // TODO Search action
@@ -138,7 +176,7 @@ public class Stocks extends Screen {
         remove = new RoundJButton();
         edit = new RoundJButton();
         tableScroll = new JScrollPane();
-        stockTable = new JTable();
+        stockTable = new ProductsJTable();
         generateStats = new RoundJButton();
         startMessage = new JLabel();
 
@@ -286,7 +324,7 @@ public class Stocks extends Screen {
     private RoundJButton remove;
     private RoundJButton edit;
     private JScrollPane tableScroll;
-    private JTable stockTable;
+    private ProductsJTable stockTable;
     private RoundJButton generateStats;
     private JLabel startMessage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
