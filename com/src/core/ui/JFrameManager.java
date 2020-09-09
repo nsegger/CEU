@@ -1,5 +1,7 @@
 package core.ui;
 
+import core.db.DatabaseInterface;
+import framework.Logger;
 import screens.Screen;
 
 import javax.imageio.ImageIO;
@@ -7,11 +9,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 
 public class JFrameManager {
     private JFrame frame;
+    private JDialog modal;
+    private ArrayList<DatabaseInterface> interfaces;
 
     public void load(Screen pane) {
         load(pane, true);
@@ -34,11 +39,42 @@ public class JFrameManager {
         frame.setVisible(true);
 
         if (width != 0 && height != 0) frame.setSize(width, height);
-        if (centerFrame) center();
+        if (centerFrame) centerFrame();
+
+        Logger.info("Loaded screen " + pane.getClass().getSimpleName());
     }
 
-    public void setTitle(String title) {
-        frame.setTitle(title);
+    public void loadModal(Class<? extends JDialog> dialogClass, String title) {
+        loadModal(dialogClass, title, true);
+    }
+
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal) {
+        loadModal(dialogClass, title, centerModal, 0, 0);
+    }
+
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal, int width, int height) {
+        if (modal != null) modal.dispose();
+
+        try {
+            modal = dialogClass.getDeclaredConstructor(Window.class).newInstance(frame);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            Logger.error("Error while loading modal " + dialogClass.getSimpleName());
+            e.printStackTrace();
+
+            return;
+        }
+
+        modal.setTitle(title);
+        modal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        modal.pack();
+        modal.setResizable(false);
+        modal.setIconImages(getIconList());
+        modal.setVisible(true);
+
+        if (width != 0 && height != 0) modal.setSize(width, height);
+        if (centerModal) centerModal();
+
+        Logger.info("Loaded modal " + modal.getClass().getSimpleName());
     }
 
     private ArrayList<Image> getIconList() {
@@ -66,8 +102,28 @@ public class JFrameManager {
         return imageList;
     }
 
-    public void center() {
+    private void center(Window window) {
         Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((dimensions.width - frame.getWidth()) / 2, (dimensions.height - frame.getHeight()) / 2);
+        window.setLocation((dimensions.width - window.getWidth()) / 2, (dimensions.height - window.getHeight()) / 2);
+    }
+
+    public void setTitle(String title) {
+        frame.setTitle(title);
+    }
+
+    public void centerFrame() {
+        center(frame);
+    }
+
+    public void centerModal() {
+        center(modal);
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public JDialog getModal() {
+        return modal;
     }
 }
