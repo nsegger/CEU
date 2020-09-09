@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -44,6 +45,7 @@ public class Stocks extends Screen {
         this.products = new ArrayList<>();
 
         initComponents();
+        stockTable.setShowVerticalLines(false);
         startMessage.setText(welcomeMessage);
 
         stockPane.setVisible(false);
@@ -161,7 +163,37 @@ public class Stocks extends Screen {
     }
 
     private void removeMouseClicked(MouseEvent e) {
-        // TODO add your code here
+        if (stockTable.getSelectedRowCount() < 1) {
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Selecione um ou mais produtos para remover",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } else {
+
+            int answer = JOptionPane.showConfirmDialog(
+                    frameManager.getFrame(),
+                    "Deseja remover " + stockTable.getSelectedRowCount() + " produtos?",
+                    "CEU - Confirmação",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            if (answer == JOptionPane.NO_OPTION) return;
+
+            int[] rows = stockTable.getSelectedRows();
+
+            ArrayList<Product> selectedProducts = new ArrayList<>();
+
+            IntStream.range(0, rows.length).forEach(index -> {
+                selectedProducts.add(products.get(rows[index]));
+                Logger.info("Adicionando produto de índice " + rows[index] + " à lista de remoção");
+            });
+
+            // TODO - Remove products from DB
+        }
+
     }
 
     private void editMouseClicked(MouseEvent e) {
@@ -170,7 +202,7 @@ public class Stocks extends Screen {
             JOptionPane.showMessageDialog(
                     frameManager.getFrame(),
                     "Selecione apenas UM produto para editar",
-                    "Erro",
+                    "CEU - Erro",
                     JOptionPane.ERROR_MESSAGE
             );
         } else {
@@ -187,7 +219,39 @@ public class Stocks extends Screen {
     }
 
     private void createMouseClicked(MouseEvent e) {
-        // TODO add your code here
+        String stockName = JOptionPane.showInputDialog(
+                frameManager.getFrame(),
+                "Nome do estoque:",
+                "CEU - Criar novo estoque",
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (stockName.equals("") || stockName.isBlank() || stockName.isEmpty()) {
+            Logger.info("Tentativa de criação de estoque com nome inválido!");
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Nome do estoque é inválido!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } else {
+            stocks.add(stockName);
+        }
+    }
+
+    private void deleteMouseClicked(MouseEvent e) {
+        int answer = JOptionPane.showConfirmDialog(
+                frameManager.getFrame(),
+                "Deseja remover o estoque \"" + stockList.getSelectedValue() + "\"?",
+                "CEU - Confirmação",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (answer == JOptionPane.NO_OPTION) return;
+
+        Logger.info("Removendo estoque " + stockList.getSelectedValue());
     }
 
     private void initComponents() {
@@ -212,6 +276,12 @@ public class Stocks extends Screen {
         //======== this ========
         setMinimumSize(new Dimension(983, 601));
         setPreferredSize(new Dimension(983, 601));
+        setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border
+        . EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder. CENTER, javax
+        . swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,
+        12 ), java. awt. Color. red) , getBorder( )) );  addPropertyChangeListener (new java. beans
+        . PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .
+        getPropertyName () )) throw new RuntimeException( ); }} );
         setLayout(null);
 
         //======== listScroll ========
@@ -257,6 +327,12 @@ public class Stocks extends Screen {
         delete.setFont(new Font("Segoe UI", delete.getFont().getStyle() | Font.BOLD, 19));
         delete.setForeground(new Color(172, 22, 22));
         delete.setVisible(false);
+        delete.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deleteMouseClicked(e);
+            }
+        });
         add(delete);
         delete.setBounds(160, 30, 45, 20);
 
