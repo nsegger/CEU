@@ -4,7 +4,7 @@
 
 package screens.login;
 
-import core.ui.JFrameManager;
+import framework.core.ui.JFrameManager;
 import screens.Screen;
 import screens.common.RoundJButton;
 import screens.common.RoundJPasswordField;

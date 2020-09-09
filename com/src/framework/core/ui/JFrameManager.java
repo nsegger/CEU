@@ -1,6 +1,6 @@
-package core.ui;
+package framework.core.ui;
 
-import core.db.DatabaseInterface;
+import framework.core.db.DatabaseInterface;
 import framework.Logger;
 import screens.Screen;
 

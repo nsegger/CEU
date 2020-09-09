@@ -1,6 +1,6 @@
 package screens;
 
-import core.ui.JFrameManager;
+import framework.core.ui.JFrameManager;
 
 import javax.swing.*;
 
