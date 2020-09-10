@@ -84,9 +84,8 @@ public class Login extends Screen {
 
         if (user != null) {
             frameManager.setLoggedUser(user);
-            ArrayList<String> items = new ArrayList<>();
 
-            Stocks stockScreen = new Stocks(frameManager, "Crie um novo estoque para começar!", items);
+            Stocks stockScreen = new Stocks(frameManager);
 
             frameManager.load(stockScreen);
         } else {

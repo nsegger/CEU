@@ -7,6 +7,8 @@ package screens.stocks;
 import java.awt.event.*;
 
 import app.product.Product;
+import app.stock.Stock;
+import app.stock.StockInterface;
 import framework.core.ui.JFrameManager;
 import framework.Logger;
 import screens.Screen;
@@ -27,22 +29,22 @@ import javax.swing.table.AbstractTableModel;
  */
 public class Stocks extends Screen {
     private String welcomeMessage;
-    private ArrayList<String> stocks;
+    private ArrayList<Stock> stocks;
     ArrayList<Product> products;
+    StockInterface stockInterface;
 
     public Stocks(JFrameManager frameManager) {
-        this(frameManager, "Crie um novo estoque para começar!", new ArrayList<>());
-    }
-
-    public Stocks(JFrameManager frameManager, String welcomeMessage) {
-        this(frameManager, welcomeMessage, new ArrayList<>());
-    }
-
-    public Stocks(JFrameManager frameManager, String welcomeMessage, ArrayList<String> stocks) {
         super("CEU - Estoques", frameManager);
-        this.welcomeMessage = welcomeMessage;
-        this.stocks = stocks;
-        this.products = new ArrayList<>();
+        stockInterface = (StockInterface) frameManager.getInterface("stock");
+
+        stocks = new ArrayList<>(stockInterface.index());
+        products = new ArrayList<>();
+
+        if (stocks.size() > 0) {
+            welcomeMessage = "Selecione um estoque para começar!";
+        } else {
+            welcomeMessage = "Crie um novo estoque para começar!";
+        }
 
         initComponents();
         stockTable.setShowVerticalLines(false);
@@ -62,19 +64,7 @@ public class Stocks extends Screen {
         delete.setBorderPainted(false);
         delete.setOpaque(false);
 
-        stockList.setModel(new AbstractListModel<>() {
-            private final ArrayList<String> values = stocks;
-
-            @Override
-            public int getSize() {
-                return values.size();
-            }
-
-            @Override
-            public String getElementAt(int index) {
-                return values.get(index);
-            }
-        });
+        stockList.setModel(new StockListModel(stocks));
         
         stockList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -208,9 +198,7 @@ public class Stocks extends Screen {
         } else {
             Product selectedProduct = products.get(stockTable.getSelectedRow());
 
-            SwingUtilities.invokeLater(() -> {
-                frameManager.loadModal(StockForm.class, "CEU - Editar produto", selectedProduct);
-            });
+            SwingUtilities.invokeLater(() -> frameManager.loadModal(StockForm.class, "CEU - Editar produto", selectedProduct));
         }
     }
 
@@ -236,7 +224,17 @@ public class Stocks extends Screen {
                     JOptionPane.ERROR_MESSAGE
             );
         } else {
-            stocks.add(stockName);
+            if (stockInterface.store(stockName, frameManager.getLoggedUser().getId())) {
+                fetchStocks();
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        frameManager.getFrame(),
+                        "Erro ao criar estoque!",
+                        "CEU - Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
@@ -251,7 +249,30 @@ public class Stocks extends Screen {
 
         if (answer == JOptionPane.NO_OPTION) return;
 
-        Logger.info("Removendo estoque " + stockList.getSelectedValue());
+        if (stockInterface.remove(stocks.get(stockList.getSelectedIndex()))) {
+
+            SwingUtilities.invokeLater(this::fetchStocks);
+
+            stockList.setSelectedIndex(-1);
+
+            delete.setVisible(false);
+            stockPane.setVisible(false);
+            startMessage.setVisible(true);
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Erro ao remover estoque!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void fetchStocks() {
+        Logger.info("Exalando lista de estoques...");
+        stocks = new ArrayList<>(stockInterface.index());
+        ((StockListModel) stockList.getModel()).updateStocks(stocks);
     }
 
     private void initComponents() {
@@ -429,4 +450,26 @@ public class Stocks extends Screen {
     private RoundJButton generateStats;
     private JLabel startMessage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+}
+
+class StockListModel extends AbstractListModel<String> {
+    private ArrayList<Stock> values;
+
+    public StockListModel(ArrayList<Stock> stocks) {
+        values = stocks;
+    }
+
+    @Override
+    public int getSize() {
+        return values.size();
+    }
+
+    @Override
+    public String getElementAt(int index) {
+        return values.get(index).getName();
+    }
+
+    public void updateStocks(ArrayList<Stock> stocks) {
+        values = stocks;
+    }
 }
