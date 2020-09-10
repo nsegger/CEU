@@ -1,15 +1,17 @@
 package app.product;
 
+import framework.core.db.Model;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class Product {
-    private final int id;
+public class Product implements Model<Product> {
+    private int id;
     private final String name;
     private final int amount;
     private final int stockId;
-    private final Date lastUpdate;
+    private Date lastUpdate;
 
     public Product(ResultSet rs) throws SQLException {
         id = rs.getInt("id");
@@ -27,6 +29,12 @@ public class Product {
         this.lastUpdate = lastUpdate;
     }
 
+    public Product(String name, int amount, int stockId) {
+        this.name = name;
+        this.amount = amount;
+        this.stockId = stockId;
+    }
+
     public String getName() {
         return name;
     }
@@ -37,5 +45,14 @@ public class Product {
 
     public Date getLastUpdate() {
         return lastUpdate;
+    }
+
+    @Override
+    public String toQuery() {
+        return String.format("VALUES (null, '%s', '%d', '%d')", name, amount, stockId);
+    }
+
+    public String toWhere() {
+        return "id = '" + id + "'";
     }
 }
