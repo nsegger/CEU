@@ -1,10 +1,12 @@
 package app.stock;
 
+import framework.core.db.Model;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Stock {
-    private final int id;
+public class Stock implements Model<Stock> {
+    private int id;
     private final String name;
     private final int userId;
 
@@ -18,5 +20,15 @@ public class Stock {
         this.id = id;
         this.name = name;
         this.userId = userId;
+    }
+
+    public Stock(String name, int userId) {
+        this.name = name;
+        this.userId = userId;
+    }
+
+    @Override
+    public String toQuery() {
+        return String.format("VALUES (null, '%s', '%d')", name, userId);
     }
 }
