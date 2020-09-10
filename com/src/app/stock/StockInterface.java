@@ -10,6 +10,7 @@ import java.util.List;
 public class StockInterface extends DatabaseInterface<Stock> {
     public StockInterface(Connection connection) {
         super(connection, Stock.class);
+        table = "stocks";
     }
 
     public List<Stock> index() {
