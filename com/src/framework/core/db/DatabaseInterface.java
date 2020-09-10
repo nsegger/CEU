@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseInterface<T extends Model<T> > implements SimpleOperations<T> {
     protected String table;
@@ -43,6 +44,28 @@ public class DatabaseInterface<T extends Model<T> > implements SimpleOperations<
         String query = String.format("SELECT * FROM %s WHERE %s = '" + column.getKey() + "'", table, column.getName());
 
         ResultSet rs = executeQuery(query);
+        if (rs.next()) {
+            try {
+                return clazz.getDeclaredConstructor(ResultSet.class).newInstance(rs);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public T findByAnd(Map<String, Object> column) throws SQLException {
+        StringBuilder query = new StringBuilder(String.format("SELECT * FROM %s WHERE", table));
+
+        column.forEach((name, key) -> {
+            query.append(String.format(" %s = '" + key + "' AND", name));
+        });
+
+        query.setLength(query.length() - 4);
+
+        ResultSet rs = executeQuery(query.toString());
         if (rs.next()) {
             try {
                 return clazz.getDeclaredConstructor(ResultSet.class).newInstance(rs);
