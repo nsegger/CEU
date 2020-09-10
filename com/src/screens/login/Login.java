@@ -57,6 +57,14 @@ public class Login extends Screen {
 
         registerLabel.addActionListener(this::labelMouseClicked);
         loginButton.addActionListener(this::loginMouseClicked);
+        pwInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    loginButton.doClick();
+                }
+            }
+        });
 
         if (register) showRegister();
     }
@@ -98,7 +106,6 @@ public class Login extends Screen {
                     JOptionPane.ERROR_MESSAGE
             );
         }
-
     }
 
     private void labelMouseClicked(ActionEvent e) {
@@ -140,19 +147,29 @@ public class Login extends Screen {
                     JOptionPane.ERROR_MESSAGE
             );
         }
-
     }
 
     private void showRegister() {
         SwingUtilities.invokeLater(() -> {
             ActionListener[] listeners = loginButton.getActionListeners();
+            KeyListener[] keyListeners = pwInput.getKeyListeners();
+
             Arrays.stream(listeners).forEach(listener -> loginButton.removeActionListener(listener));
+            Arrays.stream(keyListeners).forEach(listener -> loginButton.removeKeyListener(listener));
 
             if (register) {
                 Logger.info("Carregando tela de registro");
                 loginButton.setText("Cadastrar");
 
                 loginButton.addActionListener(this::registerMouseClicked);
+                pwInput.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            loginButton.doClick();
+                        }
+                    }
+                });
 
                 registerLabel.setVisible(false);
                 registerLabel.setEnabled(false);
@@ -163,6 +180,14 @@ public class Login extends Screen {
                 loginButton.setText("Login");
 
                 loginButton.addActionListener(this::loginMouseClicked);
+                pwInput.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            loginButton.doClick();
+                        }
+                    }
+                });
 
                 registerLabel.setVisible(true);
                 registerLabel.setEnabled(true);

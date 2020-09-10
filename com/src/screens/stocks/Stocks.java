@@ -119,11 +119,11 @@ public class Stocks extends Screen {
         }
     }
 
-    private void addMouseClicked(MouseEvent e) {
+    private void addMouseClicked(ActionEvent e) {
         frameManager.loadModal(StockForm.class, "CEU - Adicionar produto", this, stocks.get(stockList.getSelectedIndex()).getId());
     }
 
-    private void removeMouseClicked(MouseEvent e) {
+    private void removeMouseClicked(ActionEvent e) {
         if (stockTable.getSelectedRowCount() < 1) {
             JOptionPane.showMessageDialog(
                     frameManager.getFrame(),
@@ -153,11 +153,12 @@ public class Stocks extends Screen {
             });
 
             selectedProducts.forEach(product -> productInterface.remove(product));
+            fetchProducts();
         }
 
     }
 
-    private void editMouseClicked(MouseEvent e) {
+    private void editMouseClicked(ActionEvent e) {
 
         if (stockTable.getSelectedRowCount() != 1) {
             JOptionPane.showMessageDialog(
@@ -180,11 +181,11 @@ public class Stocks extends Screen {
         }
     }
 
-    private void generateStatsMouseClicked(MouseEvent e) {
+    private void generateStatsMouseClicked(ActionEvent e) {
         // TODO add your code here
     }
 
-    private void createMouseClicked(MouseEvent e) {
+    private void createMouseClicked(ActionEvent e) {
         String stockName = JOptionPane.showInputDialog(
                 frameManager.getFrame(),
                 "Nome do estoque:",
@@ -216,7 +217,7 @@ public class Stocks extends Screen {
         }
     }
 
-    private void deleteMouseClicked(MouseEvent e) {
+    private void deleteMouseClicked(ActionEvent e) {
         int answer = JOptionPane.showConfirmDialog(
                 frameManager.getFrame(),
                 "Deseja remover o estoque \"" + stockList.getSelectedValue() + "\"?",
@@ -314,12 +315,7 @@ public class Stocks extends Screen {
         create.setText("+");
         create.setFont(new Font("Segoe UI", create.getFont().getStyle() | Font.BOLD, 19));
         create.setForeground(new Color(42, 172, 22));
-        create.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                createMouseClicked(e);
-            }
-        });
+        create.addActionListener(this::createMouseClicked);
         add(create);
         create.setBounds(160, 10, 45, 20);
 
@@ -328,12 +324,7 @@ public class Stocks extends Screen {
         delete.setFont(new Font("Segoe UI", delete.getFont().getStyle() | Font.BOLD, 19));
         delete.setForeground(new Color(172, 22, 22));
         delete.setVisible(false);
-        delete.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                deleteMouseClicked(e);
-            }
-        });
+        delete.addActionListener(this::deleteMouseClicked);
         add(delete);
         delete.setBounds(160, 30, 45, 20);
 
@@ -350,34 +341,19 @@ public class Stocks extends Screen {
 
             //---- add ----
             add.setText("Adicionar");
-            add.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    addMouseClicked(e);
-                }
-            });
+            add.addActionListener(this::addMouseClicked);
             stockPane.add(add);
             add.setBounds(241, 27, 135, 35);
 
             //---- remove ----
             remove.setText("Remover");
-            remove.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    removeMouseClicked(e);
-                }
-            });
+            remove.addActionListener(this::removeMouseClicked);
             stockPane.add(remove);
             remove.setBounds(409, 27, 135, 35);
 
             //---- edit ----
             edit.setText("Editar");
-            edit.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    editMouseClicked(e);
-                }
-            });
+            edit.addActionListener(this::editMouseClicked);
             stockPane.add(edit);
             edit.setBounds(577, 27, 135, 35);
 
@@ -395,12 +371,7 @@ public class Stocks extends Screen {
 
             //---- generateStats ----
             generateStats.setText("Gerar estat\u00edsticas");
-            generateStats.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    generateStatsMouseClicked(e);
-                }
-            });
+            generateStats.addActionListener(this::generateStatsMouseClicked);
             stockPane.add(generateStats);
             generateStats.setBounds(27, 545, 700, 35);
         }
