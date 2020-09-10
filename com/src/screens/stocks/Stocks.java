@@ -7,6 +7,7 @@ package screens.stocks;
 import java.awt.event.*;
 
 import app.product.Product;
+import app.product.ProductInterface;
 import app.stock.Stock;
 import app.stock.StockInterface;
 import framework.core.ui.JFrameManager;
@@ -18,11 +19,11 @@ import screens.common.StocksJList;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * @author Nicholas Segger
@@ -32,10 +33,12 @@ public class Stocks extends Screen {
     private ArrayList<Stock> stocks;
     ArrayList<Product> products;
     StockInterface stockInterface;
+    ProductInterface productInterface;
 
     public Stocks(JFrameManager frameManager) {
         super("CEU - Estoques", frameManager);
         stockInterface = (StockInterface) frameManager.getInterface("stock");
+        productInterface = (ProductInterface) frameManager.getInterface("product");
 
         stocks = new ArrayList<>(stockInterface.index());
         products = new ArrayList<>();
@@ -68,65 +71,21 @@ public class Stocks extends Screen {
         
         stockList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                Logger.info("StockJList value is now: " + stockList.getSelectedValue());
                 delete.setVisible(true);
                 stockPane.setVisible(true);
                 startMessage.setVisible(false);
 
-                products.clear();
-
-                products.add(new Product(0, "Produto 1", 20, 0, new Date()));
-                products.add(new Product(1, "Produto 2", 1, 0, new Date()));
-
-                stockTable.setModel(new AbstractTableModel() {
-                    private final ArrayList<Product> values = products;
-
-                    @Override
-                    public Class<?> getColumnClass(int columnIndex) {
-                        return String.class;
-                    }
-
-                    @Override
-                    public String getColumnName(int column) {
-                        return switch (column) {
-                            case 0 -> "Nome";
-                            case 1 -> "Última atualização";
-                            case 2 -> "Quantidade";
-                            default -> "";
-                        };
-                    }
-
-                    @Override
-                    public int getRowCount() {
-                        return values.size();
-                    }
-
-                    @Override
-                    public int getColumnCount() {
-                        return 3;
-                    }
-
-                    @Override
-                    public Object getValueAt(int rowIndex, int columnIndex) {
-                        return switch (columnIndex) {
-                            case 0 -> values.get(rowIndex).getName();
-                            case 1 -> values.get(rowIndex).getLastUpdate().toString();
-                            case 2 -> String.valueOf(values.get(rowIndex).getAmount());
-                            default -> null;
-                        };
-                    }
-                });
-            }
-        });
-
-        stockTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && stockTable.getSelectedRow() != -1) {
-                Logger.info("JTable selected value is: " + products.get(stockTable.getSelectedRow()).getName());
+                fetchProducts();
+                stockTable.setModel(new StockTableModel(products));
             }
         });
 
         buscar.addActionListener(e -> {
-            // TODO Search action
+            ArrayList<Product> filtered = products.stream()
+                    .filter(product -> product.getName().contains(buscar.getText()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            stockTable.setModel(new StockTableModel(filtered));
         });
 
         buscar.addFocusListener(new FocusAdapter() {
@@ -137,7 +96,19 @@ public class Stocks extends Screen {
 
             @Override
             public void focusLost(FocusEvent e) {
-                buscar.setText("\uD83D\uDD0D   Buscar");
+                if (buscar.getText().isBlank() || buscar.getText().isEmpty()) {
+                    buscar.setText("\uD83D\uDD0D   Buscar");
+                    fetchProducts();
+                }
+            }
+        });
+
+        buscar.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    requestFocusInWindow();
+                }
             }
         });
 
@@ -149,7 +120,7 @@ public class Stocks extends Screen {
     }
 
     private void addMouseClicked(MouseEvent e) {
-        getFrameManager().loadModal(StockForm.class, "CEU - Adicionar produto");
+        frameManager.loadModal(StockForm.class, "CEU - Adicionar produto", this, stocks.get(stockList.getSelectedIndex()).getId());
     }
 
     private void removeMouseClicked(MouseEvent e) {
@@ -181,7 +152,7 @@ public class Stocks extends Screen {
                 Logger.info("Adicionando produto de índice " + rows[index] + " à lista de remoção");
             });
 
-            // TODO - Remove products from DB
+            selectedProducts.forEach(product -> productInterface.remove(product));
         }
 
     }
@@ -198,7 +169,14 @@ public class Stocks extends Screen {
         } else {
             Product selectedProduct = products.get(stockTable.getSelectedRow());
 
-            SwingUtilities.invokeLater(() -> frameManager.loadModal(StockForm.class, "CEU - Editar produto", selectedProduct));
+            SwingUtilities.invokeLater(() -> frameManager.loadModal(
+                        StockForm.class,
+                        "CEU - Editar produto",
+                        this,
+                        selectedProduct,
+                        stocks.get(stockList.getSelectedIndex()).getId()
+                    )
+            );
         }
     }
 
@@ -271,8 +249,16 @@ public class Stocks extends Screen {
 
     private void fetchStocks() {
         Logger.info("Exalando lista de estoques...");
+
         stocks = new ArrayList<>(stockInterface.index());
         ((StockListModel) stockList.getModel()).updateStocks(stocks);
+    }
+
+    public void fetchProducts() {
+        Logger.info("Exalando tabela de produtos...");
+
+        products = new ArrayList<>(productInterface.index(stocks.get(stockList.getSelectedIndex()).getId()));
+        stockTable.setModel(new StockTableModel(products));
     }
 
     private void initComponents() {
@@ -471,5 +457,52 @@ class StockListModel extends AbstractListModel<String> {
 
     public void updateStocks(ArrayList<Stock> stocks) {
         values = stocks;
+    }
+}
+
+class StockTableModel extends DefaultTableModel {
+    private ArrayList<Product> values;
+
+    public StockTableModel(ArrayList<Product> products) {
+        values = products;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return String.class;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return switch (column) {
+            case 0 -> "Nome";
+            case 1 -> "Última atualização";
+            case 2 -> "Quantidade";
+            default -> "";
+        };
+    }
+
+    @Override
+    public int getRowCount() {
+        return values != null ? values.size() : 0;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 3;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return switch (columnIndex) {
+            case 0 -> values.get(rowIndex).getName();
+            case 1 -> values.get(rowIndex).getLastUpdate().toString();
+            case 2 -> String.valueOf(values.get(rowIndex).getAmount());
+            default -> null;
+        };
+    }
+
+    public void updateProducts(ArrayList<Product> products) {
+        values = products;
     }
 }

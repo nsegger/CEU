@@ -5,22 +5,30 @@
 package screens.stocks;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.event.*;
 import java.io.IOException;
-import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.GroupLayout;
+
+import app.product.Product;
+import framework.Logger;
 import screens.common.*;
 
 /**
  * @author IamN5
  */
 public class StockForm extends JDialog {
-    public StockForm(Window owner) {
+    private final Stocks stockScreen;
+    private int productId;
+    private int stockId;
+
+    public StockForm(Window owner, Stocks stockScreen) {
         super(owner);
         setModal(true);
 
+        this.stockScreen = stockScreen;
         initComponents();
 
         try {
@@ -36,6 +44,48 @@ public class StockForm extends JDialog {
 
     public void setAmountField(int n) {
         amount.setValue(n);
+    }
+
+    public void setProductId(int id) {
+        productId = id;
+    }
+
+    public void setStockId(int id) {
+        stockId = id;
+    }
+
+    private void addMouseClicked(MouseEvent e) {
+        Timestamp ts = new Timestamp(new Date().getTime());
+
+        if (getTitle().equals("CEU - Editar produto")) {
+            if (stockScreen.productInterface.patch(new Product(productId, name.getText(), (Integer) amount.getValue(), stockId, ts))) {
+                stockScreen.fetchProducts();
+            } else {
+                Logger.info("Não foi possível atualizar produto");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Erro ao atualizar produto!",
+                        "CEU - Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            if (stockScreen.productInterface.store(new Product(name.getText(), (Integer) amount.getValue(), stockId, ts))) {
+                stockScreen.fetchProducts();
+            } else {
+                Logger.info("Não foi possível criar produto");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Erro ao criar produto!",
+                        "CEU - Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+
+        dispose();
     }
 
     private void initComponents() {
@@ -75,6 +125,12 @@ public class StockForm extends JDialog {
 
         //---- add ----
         add.setText("Adicionar");
+        add.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addMouseClicked(e);
+            }
+        });
         contentPane.add(add);
         add.setBounds(75, 460, 351, 35);
 
