@@ -6,6 +6,7 @@ import framework.core.db.DatabaseInterface;
 import framework.Logger;
 import screens.Screen;
 import screens.stocks.StockForm;
+import screens.stocks.Stocks;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -49,23 +50,32 @@ public class JFrameManager {
         Logger.info("Loaded screen " + pane.getClass().getSimpleName());
     }
 
-    public void loadModal(Class<? extends JDialog> dialogClass, String title, Product product) {
-        loadModal(dialogClass, title, true, 0, 0, product);
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, Stocks stockScreen, Product product, int stockId) {
+        loadModal(dialogClass, title, true, 0, 0, stockScreen, product, stockId);
     }
 
-    public void loadModal(Class<? extends JDialog> dialogClass, String title) {
-        loadModal(dialogClass, title, true);
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, Stocks stockScreen, int stockId) {
+        loadModal(dialogClass, title, true, stockScreen, stockId);
     }
 
-    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal) {
-        loadModal(dialogClass, title, centerModal, 0, 0, null);
+    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal, Stocks stockScreen, int stockId) {
+        loadModal(dialogClass, title, centerModal, 0, 0, stockScreen, null, stockId);
     }
 
-    public void loadModal(Class<? extends JDialog> dialogClass, String title, boolean centerModal, int width, int height, Product product) {
+    public void loadModal(
+            Class<? extends JDialog> dialogClass,
+            String title,
+            boolean centerModal,
+            int width,
+            int height,
+            Stocks stockScreen,
+            Product product,
+            int stockId)
+    {
         if (modal != null) modal.dispose();
 
         try {
-            modal = dialogClass.getDeclaredConstructor(Window.class).newInstance(frame);
+            modal = dialogClass.getDeclaredConstructor(Window.class, Stocks.class).newInstance(frame, stockScreen);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             Logger.error("Error while loading modal " + dialogClass.getSimpleName());
             e.printStackTrace();
@@ -73,11 +83,15 @@ public class JFrameManager {
             return;
         }
 
+        StockForm stockForm = (StockForm) modal;
+        stockForm.setStockId(stockId);
+
         if (product != null) {
-            StockForm stockForm = (StockForm) modal;
+
 
             stockForm.setNameField(product.getName());
             stockForm.setAmountField(product.getAmount());
+            stockForm.setProductId(product.getId());
 
             Logger.info("Set modal field \"Name\" to " + product.getName());
             Logger.info("Set modal field \"Amount\" to " + product.getAmount());
