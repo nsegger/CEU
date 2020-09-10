@@ -36,6 +36,19 @@ public class StockInterface extends DatabaseInterface<Stock> {
         return false;
     }
 
+    public boolean remove(Stock entry) {
+        Logger.db("Removendo estoque " + entry.getName());
+
+        try {
+            return delete(entry);
+        } catch (SQLException throwables) {
+            Logger.error("Erro ao remover estoque:");
+            throwables.printStackTrace();
+        }
+
+        return false;
+    }
+
     private boolean delete(Stock entry) throws SQLException {
         String query = String.format("DELETE FROM %s WHERE %s", table, entry.toWhere());
 
