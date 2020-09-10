@@ -32,7 +32,6 @@ public class ProductsJTable extends JTable implements MouseMotionListener {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                Logger.info("Mouse exited JTable");
                 renderer.setHoveredRow(-1);
                 repaint();
             }

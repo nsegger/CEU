@@ -35,7 +35,6 @@ public class ProductsTableCellRenderer extends JLabel implements TableCellRender
 
     public void setHoveredRow(int row) {
         hoveredRow = row;
-        Logger.info("Hovered row is now " + hoveredRow);
     }
 
     public int getHoveredRow() {
