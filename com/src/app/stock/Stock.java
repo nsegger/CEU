@@ -40,4 +40,7 @@ public class Stock implements Model<Stock> {
         return "id = '" + id + "'";
     }
 
+    public int getId() {
+        return id;
+    }
 }
