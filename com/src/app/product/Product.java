@@ -4,6 +4,7 @@ import framework.core.db.Model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Product implements Model<Product> {
@@ -11,17 +12,21 @@ public class Product implements Model<Product> {
     private final String name;
     private final int amount;
     private final int stockId;
-    private Date lastUpdate;
+    private final Timestamp lastUpdate;
+
+    public int getStockId() {
+        return stockId;
+    }
 
     public Product(ResultSet rs) throws SQLException {
         id = rs.getInt("id");
         name = rs.getString("name");
         amount = rs.getInt("amount");
         stockId = rs.getInt("stock_id");
-        lastUpdate = rs.getDate("last_update");
+        lastUpdate = rs.getTimestamp("last_update");
     }
 
-    public Product(int id, String name, int amount, int stockId, Date lastUpdate) {
+    public Product(int id, String name, int amount, int stockId, Timestamp lastUpdate) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -29,10 +34,11 @@ public class Product implements Model<Product> {
         this.lastUpdate = lastUpdate;
     }
 
-    public Product(String name, int amount, int stockId) {
+    public Product(String name, int amount, int stockId, Timestamp lastUpdate) {
         this.name = name;
         this.amount = amount;
         this.stockId = stockId;
+        this.lastUpdate = lastUpdate;
     }
 
     public String getName() {
@@ -43,7 +49,7 @@ public class Product implements Model<Product> {
         return amount;
     }
 
-    public Date getLastUpdate() {
+    public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
@@ -53,7 +59,7 @@ public class Product implements Model<Product> {
 
     @Override
     public String toQuery() {
-        return String.format("VALUES (null, '%s', '%d', '%d')", name, amount, stockId);
+        return String.format("VALUES (null, '%s', '%d', '%d', '%s')", name, amount, stockId, lastUpdate);
     }
 
     public String toWhere() {
