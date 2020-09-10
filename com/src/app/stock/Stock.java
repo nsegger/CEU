@@ -37,7 +37,7 @@ public class Stock implements Model<Stock> {
     }
 
     public String toWhere() {
-        return "name = '" + name + "' AND user_id = '" + userId + "'";
+        return "id = '" + id + "'";
     }
 
 }
