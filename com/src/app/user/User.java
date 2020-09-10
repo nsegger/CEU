@@ -31,4 +31,8 @@ public class User implements Model<User> {
     public String toQuery() {
         return String.format("VALUES (null, '%s', '%s')", username, password);
     }
+
+    public int getId() {
+        return id;
+    }
 }
