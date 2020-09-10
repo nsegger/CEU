@@ -86,8 +86,9 @@ public class DatabaseInterface<T extends Model<T> > implements SimpleOperations<
     public boolean create(T entry) throws SQLException {
         String query = String.format("INSERT INTO %s %s", table, entry.toQuery());
 
+        Logger.db("Executando update \"" + query + "\"");
         int rowsAffected = connection.prepareStatement(query).executeUpdate();
-        Logger.db("Executado update \"" + query + "\" com " + rowsAffected + " linhas afetadas");
+        Logger.db("Executado update com " + rowsAffected + " linhas afetadas");
 
         return rowsAffected > 0;
     }
