@@ -226,7 +226,7 @@ public class Stocks extends Screen {
                 JOptionPane.PLAIN_MESSAGE
         );
 
-        if (stockName.equals("") || stockName.isBlank() || stockName.isEmpty()) {
+        if (stockName == null || stockName.isBlank() || stockName.isEmpty()) {
             Logger.info("Tentativa de criação de estoque com nome inválido!");
 
             JOptionPane.showMessageDialog(
@@ -276,12 +276,6 @@ public class Stocks extends Screen {
         //======== this ========
         setMinimumSize(new Dimension(983, 601));
         setPreferredSize(new Dimension(983, 601));
-        setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border
-        . EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder. CENTER, javax
-        . swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,
-        12 ), java. awt. Color. red) , getBorder( )) );  addPropertyChangeListener (new java. beans
-        . PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .
-        getPropertyName () )) throw new RuntimeException( ); }} );
         setLayout(null);
 
         //======== listScroll ========
