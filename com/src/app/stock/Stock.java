@@ -27,8 +27,17 @@ public class Stock implements Model<Stock> {
         this.userId = userId;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toQuery() {
         return String.format("VALUES (null, '%s', '%d')", name, userId);
     }
+
+    public String toWhere() {
+        return "name = '" + name + "' AND user_id = '" + userId + "'";
+    }
+
 }
