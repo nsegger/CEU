@@ -47,6 +47,10 @@ public class Product implements Model<Product> {
         return lastUpdate;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toQuery() {
         return String.format("VALUES (null, '%s', '%d', '%d')", name, amount, stockId);
