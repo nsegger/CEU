@@ -1,10 +1,12 @@
 package app.user;
 
+import framework.core.db.Model;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class User {
-    private final int id;
+public class User implements Model<User> {
+    private int id;
     private final String username;
     private final String password;
 
@@ -18,5 +20,15 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    @Override
+    public String toQuery() {
+        return String.format("VALUES (null, '%s', '%s')", username, password);
     }
 }
