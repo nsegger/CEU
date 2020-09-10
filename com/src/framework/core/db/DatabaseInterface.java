@@ -40,28 +40,28 @@ public class DatabaseInterface<T extends Model<T> > implements SimpleOperations<
     }
 
     @Override
-    public T findBy(DatabaseColumn column) throws SQLException {
+    public List<T> findBy(DatabaseColumn column) throws SQLException {
         String query = String.format("SELECT * FROM %s WHERE %s = '" + column.getKey() + "'", table, column.getName());
 
         ResultSet rs = executeQuery(query);
-        if (rs.next()) {
+
+        ArrayList<T> results = new ArrayList<>();
+        while (rs.next()) {
             try {
-                return clazz.getDeclaredConstructor(ResultSet.class).newInstance(rs);
+                results.add(clazz.getDeclaredConstructor(ResultSet.class).newInstance(rs));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
 
-        return null;
+        return results;
     }
 
     @Override
     public T findByAnd(Map<String, Object> column) throws SQLException {
         StringBuilder query = new StringBuilder(String.format("SELECT * FROM %s WHERE", table));
 
-        column.forEach((name, key) -> {
-            query.append(String.format(" %s = '" + key + "' AND", name));
-        });
+        column.forEach((name, key) -> query.append(String.format(" %s = '" + key + "' AND", name)));
 
         query.setLength(query.length() - 4);
 
@@ -79,7 +79,7 @@ public class DatabaseInterface<T extends Model<T> > implements SimpleOperations<
 
     @Override
     public T findById(int id) throws SQLException {
-        return findBy(new DatabaseColumn("id", id));
+        return findBy(new DatabaseColumn("id", id)).get(0);
     }
 
     @Override
