@@ -1,5 +1,6 @@
 package framework.core;
 
+import app.stock.StockInterface;
 import app.user.UserInterface;
 import com.bulenkov.darcula.DarculaLaf;
 import framework.core.db.DatabaseInterface;
@@ -38,6 +39,7 @@ public class App {
         HashMap<String, DatabaseInterface<?> > interfaces = new HashMap<>();
 
         interfaces.put("user", new UserInterface(connection));
+        interfaces.put("stock", new StockInterface(connection));
         frameManager.setInterfaces(interfaces);
 
         frameManager.load(new Login(frameManager));

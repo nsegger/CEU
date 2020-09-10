@@ -5,7 +5,6 @@ import framework.core.db.DatabaseInterface;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 
 public class UserInterface extends DatabaseInterface<User> {
