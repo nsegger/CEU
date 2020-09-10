@@ -1,5 +1,6 @@
 package framework.core;
 
+import app.product.ProductInterface;
 import app.stock.StockInterface;
 import app.user.UserInterface;
 import com.bulenkov.darcula.DarculaLaf;
@@ -40,6 +41,7 @@ public class App {
 
         interfaces.put("user", new UserInterface(connection));
         interfaces.put("stock", new StockInterface(connection));
+        interfaces.put("product", new ProductInterface(connection));
         frameManager.setInterfaces(interfaces);
 
         frameManager.load(new Login(frameManager));
