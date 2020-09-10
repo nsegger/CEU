@@ -3,6 +3,6 @@ CREATE TABLE products (
     name VARCHAR(40) NOT NULL,
     amount INT NOT NULL,
     stock_id INT NOT NULL,
-    last_update DATETIME,
+    last_update TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (stock_id) REFERENCES stocks(id)
 );
