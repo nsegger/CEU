@@ -51,10 +51,15 @@ public class StockInterface extends DatabaseInterface<Stock> {
     }
 
     private boolean delete(Stock entry) throws SQLException {
-        String query = String.format("DELETE FROM %s WHERE %s", table, entry.toWhere());
+        String query = String.format("DELETE FROM products WHERE stock_id = '%d'", entry.getId());
 
+        Logger.db("Executando delete \"" + query + "\"");
         int rowsAffected = connection.prepareStatement(query).executeUpdate();
-        Logger.db("Executado update \"" + query + "\" com " + rowsAffected + " linhas afetadas");
+        Logger.db("Executado delete com " + rowsAffected + " linhas afetadas");
+
+        query = String.format("DELETE FROM %s WHERE %s", table, entry.toWhere());
+        rowsAffected = connection.prepareStatement(query).executeUpdate();
+        Logger.db("Executado delete \"" + query + "\" com " + rowsAffected + " linhas afetadas");
 
         return rowsAffected > 0;
     }
