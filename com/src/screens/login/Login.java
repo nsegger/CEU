@@ -4,6 +4,9 @@
 
 package screens.login;
 
+import app.user.User;
+import app.user.UserInterface;
+import framework.Logger;
 import framework.core.ui.JFrameManager;
 import screens.Screen;
 import screens.common.RoundJButton;
@@ -29,6 +32,11 @@ public class Login extends Screen {
     private final String loginTitle = "CEU - Controle de Estoque Universal";
     private final String registerTitle = "CEU - Cadastro";
 
+
+    public Login (JFrameManager frameManager) {
+        this(frameManager, false);
+    }
+
     public Login(JFrameManager frameManager, boolean showRegister) {
         super("CEU - Controle de Estoque Universal", frameManager);
         this.register = showRegister;
@@ -53,18 +61,45 @@ public class Login extends Screen {
         if (register) showRegister();
     }
 
-    public Login (JFrameManager frameManager) {
-        this(frameManager, false);
-    }
-
     private void loginMouseClicked(ActionEvent e) {
-        ArrayList<String> items = new ArrayList<>();
-        items.add("Estoque 1");
-        items.add("Dois");
+        String username = userInput.getText();
+        String password = new String(pwInput.getPassword());
 
-        Stocks stockScreen = new Stocks(getFrameManager(), "Crie um novo estoque para começar!", items);
+        if (username.isEmpty() || username.isBlank() || password.isBlank() || password.isEmpty()) {
+            Logger.info("Usuário ou senha inválidas!");
 
-        getFrameManager().load(stockScreen);
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Usuário e/ou senha inválidos!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
+
+        UserInterface userInterface = (UserInterface) frameManager.getInterface("user");
+
+        User user = userInterface.login(username, password);
+
+        if (user != null) {
+            frameManager.setLoggedUser(user);
+            ArrayList<String> items = new ArrayList<>();
+
+            Stocks stockScreen = new Stocks(frameManager, "Crie um novo estoque para começar!", items);
+
+            frameManager.load(stockScreen);
+        } else {
+            Logger.info("Usuário inválido!");
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Usuário e/ou senha inválidos!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
     }
 
     private void labelMouseClicked(ActionEvent e) {
@@ -73,19 +108,49 @@ public class Login extends Screen {
     }
 
     private void registerMouseClicked(ActionEvent e) {
-        System.out.println("Trying to register");
-        register = false;
-        showRegister();
+        String username = userInput.getText();
+        String password = new String(pwInput.getPassword());
+
+        if (username.isEmpty() || username.isBlank() || password.isBlank() || password.isEmpty()) {
+            Logger.info("Usuário ou senha inválidas!");
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Usuário e/ou senha inválidos!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
+
+        UserInterface userInterface = (UserInterface) frameManager.getInterface("user");
+
+        if (userInterface.register(username, password)) {
+            Logger.info("Usuário " + username + " registrado com sucesso");
+
+            register = false;
+            showRegister();
+        } else {
+            Logger.info("Não foi possível cadastrar usuário!");
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Usuário já cadastrado!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
     }
 
     private void showRegister() {
-        System.out.println("Loading register screen");
-
         SwingUtilities.invokeLater(() -> {
             ActionListener[] listeners = loginButton.getActionListeners();
             Arrays.stream(listeners).forEach(listener -> loginButton.removeActionListener(listener));
 
             if (register) {
+                Logger.info("Carregando tela de registro");
                 loginButton.setText("Cadastrar");
 
                 loginButton.addActionListener(this::registerMouseClicked);
@@ -95,6 +160,7 @@ public class Login extends Screen {
 
                 super.getFrameManager().setTitle(registerTitle);
             } else {
+                Logger.info("Carregando tela de login");
                 loginButton.setText("Login");
 
                 loginButton.addActionListener(this::loginMouseClicked);

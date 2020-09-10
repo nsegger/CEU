@@ -2,6 +2,7 @@ package framework.core;
 
 import app.user.UserInterface;
 import com.bulenkov.darcula.DarculaLaf;
+import framework.core.db.DatabaseInterface;
 import framework.core.db.MySQL;
 import framework.core.ui.JFrameManager;
 import framework.Logger;
@@ -10,6 +11,8 @@ import screens.login.Login;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicLookAndFeel;
+import java.sql.Connection;
+import java.util.HashMap;
 
 public class App {
     private final JFrameManager frameManager;
@@ -30,8 +33,12 @@ public class App {
 
         Logger.initialization();
 
-        UserInterface userInterface = new UserInterface();
+        Connection connection = mysql.getConnection();
 
+        HashMap<String, DatabaseInterface<?> > interfaces = new HashMap<>();
+
+        interfaces.put("user", new UserInterface(connection));
+        frameManager.setInterfaces(interfaces);
 
         frameManager.load(new Login(frameManager));
     }

@@ -1,6 +1,7 @@
 package framework.core.ui;
 
 import app.product.Product;
+import app.user.User;
 import framework.core.db.DatabaseInterface;
 import framework.Logger;
 import screens.Screen;
@@ -14,11 +15,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JFrameManager {
     private JFrame frame;
     private JDialog modal;
-    private ArrayList<DatabaseInterface> interfaces;
+    private HashMap<String, DatabaseInterface<?> > interfaces;
+    private User loggedUser;
 
     public void load(Screen pane) {
         load(pane, true);
@@ -127,6 +130,14 @@ public class JFrameManager {
         frame.setTitle(title);
     }
 
+    public void setLoggedUser(User user) {
+        loggedUser = user;
+    }
+
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+
     public void centerFrame() {
         center(frame);
     }
@@ -141,5 +152,13 @@ public class JFrameManager {
 
     public JDialog getModal() {
         return modal;
+    }
+
+    public DatabaseInterface<?> getInterface(String name) {
+        return interfaces.get(name);
+    }
+
+    public void setInterfaces(HashMap<String, DatabaseInterface<?>> interfaces) {
+        this.interfaces = interfaces;
     }
 }
