@@ -7,6 +7,9 @@ package screens.stocks;
 import java.awt.event.*;
 
 import app.product.Product;
+import app.product.ProductInterface;
+import app.stock.Stock;
+import app.stock.StockInterface;
 import framework.core.ui.JFrameManager;
 import framework.Logger;
 import screens.Screen;
@@ -16,33 +19,35 @@ import screens.common.StocksJList;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * @author Nicholas Segger
  */
 public class Stocks extends Screen {
     private String welcomeMessage;
-    private ArrayList<String> stocks;
+    private ArrayList<Stock> stocks;
     ArrayList<Product> products;
+    StockInterface stockInterface;
+    ProductInterface productInterface;
 
     public Stocks(JFrameManager frameManager) {
-        this(frameManager, "Crie um novo estoque para começar!", new ArrayList<>());
-    }
-
-    public Stocks(JFrameManager frameManager, String welcomeMessage) {
-        this(frameManager, welcomeMessage, new ArrayList<>());
-    }
-
-    public Stocks(JFrameManager frameManager, String welcomeMessage, ArrayList<String> stocks) {
         super("CEU - Estoques", frameManager);
-        this.welcomeMessage = welcomeMessage;
-        this.stocks = stocks;
-        this.products = new ArrayList<>();
+        stockInterface = (StockInterface) frameManager.getInterface("stock");
+        productInterface = (ProductInterface) frameManager.getInterface("product");
+
+        stocks = new ArrayList<>(stockInterface.index());
+        products = new ArrayList<>();
+
+        if (stocks.size() > 0) {
+            welcomeMessage = "Selecione um estoque para começar!";
+        } else {
+            welcomeMessage = "Crie um novo estoque para começar!";
+        }
 
         initComponents();
         stockTable.setShowVerticalLines(false);
@@ -62,81 +67,25 @@ public class Stocks extends Screen {
         delete.setBorderPainted(false);
         delete.setOpaque(false);
 
-        stockList.setModel(new AbstractListModel<>() {
-            private final ArrayList<String> values = stocks;
-
-            @Override
-            public int getSize() {
-                return values.size();
-            }
-
-            @Override
-            public String getElementAt(int index) {
-                return values.get(index);
-            }
-        });
+        stockList.setModel(new StockListModel(stocks));
         
         stockList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                Logger.info("StockJList value is now: " + stockList.getSelectedValue());
                 delete.setVisible(true);
                 stockPane.setVisible(true);
                 startMessage.setVisible(false);
 
-                products.clear();
-
-                products.add(new Product(0, "Produto 1", 20, 0, new Date()));
-                products.add(new Product(1, "Produto 2", 1, 0, new Date()));
-
-                stockTable.setModel(new AbstractTableModel() {
-                    private final ArrayList<Product> values = products;
-
-                    @Override
-                    public Class<?> getColumnClass(int columnIndex) {
-                        return String.class;
-                    }
-
-                    @Override
-                    public String getColumnName(int column) {
-                        return switch (column) {
-                            case 0 -> "Nome";
-                            case 1 -> "Última atualização";
-                            case 2 -> "Quantidade";
-                            default -> "";
-                        };
-                    }
-
-                    @Override
-                    public int getRowCount() {
-                        return values.size();
-                    }
-
-                    @Override
-                    public int getColumnCount() {
-                        return 3;
-                    }
-
-                    @Override
-                    public Object getValueAt(int rowIndex, int columnIndex) {
-                        return switch (columnIndex) {
-                            case 0 -> values.get(rowIndex).getName();
-                            case 1 -> values.get(rowIndex).getLastUpdate().toString();
-                            case 2 -> String.valueOf(values.get(rowIndex).getAmount());
-                            default -> null;
-                        };
-                    }
-                });
-            }
-        });
-
-        stockTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && stockTable.getSelectedRow() != -1) {
-                Logger.info("JTable selected value is: " + products.get(stockTable.getSelectedRow()).getName());
+                fetchProducts();
+                stockTable.setModel(new StockTableModel(products));
             }
         });
 
         buscar.addActionListener(e -> {
-            // TODO Search action
+            ArrayList<Product> filtered = products.stream()
+                    .filter(product -> product.getName().contains(buscar.getText()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            stockTable.setModel(new StockTableModel(filtered));
         });
 
         buscar.addFocusListener(new FocusAdapter() {
@@ -147,7 +96,19 @@ public class Stocks extends Screen {
 
             @Override
             public void focusLost(FocusEvent e) {
-                buscar.setText("\uD83D\uDD0D   Buscar");
+                if (buscar.getText().isBlank() || buscar.getText().isEmpty()) {
+                    buscar.setText("\uD83D\uDD0D   Buscar");
+                    fetchProducts();
+                }
+            }
+        });
+
+        buscar.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    requestFocusInWindow();
+                }
             }
         });
 
@@ -158,11 +119,11 @@ public class Stocks extends Screen {
         }
     }
 
-    private void addMouseClicked(MouseEvent e) {
-        getFrameManager().loadModal(StockForm.class, "CEU - Adicionar produto");
+    private void addMouseClicked(ActionEvent e) {
+        frameManager.loadModal(StockForm.class, "CEU - Adicionar produto", this, stocks.get(stockList.getSelectedIndex()).getId());
     }
 
-    private void removeMouseClicked(MouseEvent e) {
+    private void removeMouseClicked(ActionEvent e) {
         if (stockTable.getSelectedRowCount() < 1) {
             JOptionPane.showMessageDialog(
                     frameManager.getFrame(),
@@ -191,12 +152,13 @@ public class Stocks extends Screen {
                 Logger.info("Adicionando produto de índice " + rows[index] + " à lista de remoção");
             });
 
-            // TODO - Remove products from DB
+            selectedProducts.forEach(product -> productInterface.remove(product));
+            fetchProducts();
         }
 
     }
 
-    private void editMouseClicked(MouseEvent e) {
+    private void editMouseClicked(ActionEvent e) {
 
         if (stockTable.getSelectedRowCount() != 1) {
             JOptionPane.showMessageDialog(
@@ -208,17 +170,22 @@ public class Stocks extends Screen {
         } else {
             Product selectedProduct = products.get(stockTable.getSelectedRow());
 
-            SwingUtilities.invokeLater(() -> {
-                frameManager.loadModal(StockForm.class, "CEU - Editar produto", selectedProduct);
-            });
+            SwingUtilities.invokeLater(() -> frameManager.loadModal(
+                        StockForm.class,
+                        "CEU - Editar produto",
+                        this,
+                        selectedProduct,
+                        stocks.get(stockList.getSelectedIndex()).getId()
+                    )
+            );
         }
     }
 
-    private void generateStatsMouseClicked(MouseEvent e) {
+    private void generateStatsMouseClicked(ActionEvent e) {
         // TODO add your code here
     }
 
-    private void createMouseClicked(MouseEvent e) {
+    private void createMouseClicked(ActionEvent e) {
         String stockName = JOptionPane.showInputDialog(
                 frameManager.getFrame(),
                 "Nome do estoque:",
@@ -226,7 +193,7 @@ public class Stocks extends Screen {
                 JOptionPane.PLAIN_MESSAGE
         );
 
-        if (stockName.equals("") || stockName.isBlank() || stockName.isEmpty()) {
+        if (stockName == null || stockName.isBlank() || stockName.isEmpty()) {
             Logger.info("Tentativa de criação de estoque com nome inválido!");
 
             JOptionPane.showMessageDialog(
@@ -236,11 +203,21 @@ public class Stocks extends Screen {
                     JOptionPane.ERROR_MESSAGE
             );
         } else {
-            stocks.add(stockName);
+            if (stockInterface.store(stockName, frameManager.getLoggedUser().getId())) {
+                fetchStocks();
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        frameManager.getFrame(),
+                        "Erro ao criar estoque!",
+                        "CEU - Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
-    private void deleteMouseClicked(MouseEvent e) {
+    private void deleteMouseClicked(ActionEvent e) {
         int answer = JOptionPane.showConfirmDialog(
                 frameManager.getFrame(),
                 "Deseja remover o estoque \"" + stockList.getSelectedValue() + "\"?",
@@ -251,7 +228,38 @@ public class Stocks extends Screen {
 
         if (answer == JOptionPane.NO_OPTION) return;
 
-        Logger.info("Removendo estoque " + stockList.getSelectedValue());
+        if (stockInterface.remove(stocks.get(stockList.getSelectedIndex()))) {
+
+            SwingUtilities.invokeLater(this::fetchStocks);
+
+            stockList.setSelectedIndex(-1);
+
+            delete.setVisible(false);
+            stockPane.setVisible(false);
+            startMessage.setVisible(true);
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    frameManager.getFrame(),
+                    "Erro ao remover estoque!",
+                    "CEU - Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void fetchStocks() {
+        Logger.info("Exalando lista de estoques...");
+
+        stocks = new ArrayList<>(stockInterface.index());
+        ((StockListModel) stockList.getModel()).updateStocks(stocks);
+    }
+
+    public void fetchProducts() {
+        Logger.info("Exalando tabela de produtos...");
+
+        products = new ArrayList<>(productInterface.index(stocks.get(stockList.getSelectedIndex()).getId()));
+        stockTable.setModel(new StockTableModel(products));
     }
 
     private void initComponents() {
@@ -276,12 +284,6 @@ public class Stocks extends Screen {
         //======== this ========
         setMinimumSize(new Dimension(983, 601));
         setPreferredSize(new Dimension(983, 601));
-        setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border
-        . EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder. CENTER, javax
-        . swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,
-        12 ), java. awt. Color. red) , getBorder( )) );  addPropertyChangeListener (new java. beans
-        . PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .
-        getPropertyName () )) throw new RuntimeException( ); }} );
         setLayout(null);
 
         //======== listScroll ========
@@ -313,12 +315,7 @@ public class Stocks extends Screen {
         create.setText("+");
         create.setFont(new Font("Segoe UI", create.getFont().getStyle() | Font.BOLD, 19));
         create.setForeground(new Color(42, 172, 22));
-        create.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                createMouseClicked(e);
-            }
-        });
+        create.addActionListener(this::createMouseClicked);
         add(create);
         create.setBounds(160, 10, 45, 20);
 
@@ -327,12 +324,7 @@ public class Stocks extends Screen {
         delete.setFont(new Font("Segoe UI", delete.getFont().getStyle() | Font.BOLD, 19));
         delete.setForeground(new Color(172, 22, 22));
         delete.setVisible(false);
-        delete.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                deleteMouseClicked(e);
-            }
-        });
+        delete.addActionListener(this::deleteMouseClicked);
         add(delete);
         delete.setBounds(160, 30, 45, 20);
 
@@ -349,34 +341,19 @@ public class Stocks extends Screen {
 
             //---- add ----
             add.setText("Adicionar");
-            add.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    addMouseClicked(e);
-                }
-            });
+            add.addActionListener(this::addMouseClicked);
             stockPane.add(add);
             add.setBounds(241, 27, 135, 35);
 
             //---- remove ----
             remove.setText("Remover");
-            remove.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    removeMouseClicked(e);
-                }
-            });
+            remove.addActionListener(this::removeMouseClicked);
             stockPane.add(remove);
             remove.setBounds(409, 27, 135, 35);
 
             //---- edit ----
             edit.setText("Editar");
-            edit.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    editMouseClicked(e);
-                }
-            });
+            edit.addActionListener(this::editMouseClicked);
             stockPane.add(edit);
             edit.setBounds(577, 27, 135, 35);
 
@@ -394,12 +371,7 @@ public class Stocks extends Screen {
 
             //---- generateStats ----
             generateStats.setText("Gerar estat\u00edsticas");
-            generateStats.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    generateStatsMouseClicked(e);
-                }
-            });
+            generateStats.addActionListener(this::generateStatsMouseClicked);
             stockPane.add(generateStats);
             generateStats.setBounds(27, 545, 700, 35);
         }
@@ -435,4 +407,73 @@ public class Stocks extends Screen {
     private RoundJButton generateStats;
     private JLabel startMessage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+}
+
+class StockListModel extends AbstractListModel<String> {
+    private ArrayList<Stock> values;
+
+    public StockListModel(ArrayList<Stock> stocks) {
+        values = stocks;
+    }
+
+    @Override
+    public int getSize() {
+        return values.size();
+    }
+
+    @Override
+    public String getElementAt(int index) {
+        return values.get(index).getName();
+    }
+
+    public void updateStocks(ArrayList<Stock> stocks) {
+        values = stocks;
+    }
+}
+
+class StockTableModel extends DefaultTableModel {
+    private ArrayList<Product> values;
+
+    public StockTableModel(ArrayList<Product> products) {
+        values = products;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return String.class;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return switch (column) {
+            case 0 -> "Nome";
+            case 1 -> "Última atualização";
+            case 2 -> "Quantidade";
+            default -> "";
+        };
+    }
+
+    @Override
+    public int getRowCount() {
+        return values != null ? values.size() : 0;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 3;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return switch (columnIndex) {
+            case 0 -> values.get(rowIndex).getName();
+            case 1 -> values.get(rowIndex).getLastUpdate().toString();
+            case 2 -> String.valueOf(values.get(rowIndex).getAmount());
+            default -> null;
+        };
+    }
+
+    public void updateProducts(ArrayList<Product> products) {
+        values = products;
+    }
 }
