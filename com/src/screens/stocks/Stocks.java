@@ -278,7 +278,6 @@ public class Stocks extends Screen {
         edit = new RoundJButton();
         tableScroll = new JScrollPane();
         stockTable = new ProductsJTable();
-        generateStats = new RoundJButton();
         startMessage = new JLabel();
 
         //======== this ========
@@ -368,12 +367,6 @@ public class Stocks extends Screen {
             }
             stockPane.add(tableScroll);
             tableScroll.setBounds(27, 92, 700, 432);
-
-            //---- generateStats ----
-            generateStats.setText("Gerar estat\u00edsticas");
-            generateStats.addActionListener(this::generateStatsMouseClicked);
-            stockPane.add(generateStats);
-            generateStats.setBounds(27, 545, 700, 35);
         }
         add(stockPane);
         stockPane.setBounds(213, 0, 772, 600);

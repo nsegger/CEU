@@ -155,7 +155,7 @@ public class Login extends Screen {
             KeyListener[] keyListeners = pwInput.getKeyListeners();
 
             Arrays.stream(listeners).forEach(listener -> loginButton.removeActionListener(listener));
-            Arrays.stream(keyListeners).forEach(listener -> loginButton.removeKeyListener(listener));
+            Arrays.stream(keyListeners).forEach(listener -> pwInput.removeKeyListener(listener));
 
             if (register) {
                 Logger.info("Carregando tela de registro");
