@@ -232,11 +232,12 @@ public class Stocks extends Screen {
 
             SwingUtilities.invokeLater(this::fetchStocks);
 
-            stockList.setSelectedIndex(-1);
+            SwingUtilities.invokeLater(() -> {
+                delete.setVisible(false);
+                stockPane.setVisible(false);
+                startMessage.setVisible(true);
+            });
 
-            delete.setVisible(false);
-            stockPane.setVisible(false);
-            startMessage.setVisible(true);
         } else {
 
             JOptionPane.showMessageDialog(
@@ -253,13 +254,19 @@ public class Stocks extends Screen {
 
         stocks = new ArrayList<>(stockInterface.index());
         ((StockListModel) stockList.getModel()).updateStocks(stocks);
+        stockList.repaint();
+        stockList.clearSelection();
     }
 
     public void fetchProducts() {
+        int index = stockList.getSelectedIndex();
+        if (index < 0) return;
+
         Logger.info("Exalando tabela de produtos...");
 
-        products = new ArrayList<>(productInterface.index(stocks.get(stockList.getSelectedIndex()).getId()));
+        products = new ArrayList<>(productInterface.index(stocks.get(index).getId()));
         stockTable.setModel(new StockTableModel(products));
+        stockTable.repaint();
     }
 
     private void initComponents() {
