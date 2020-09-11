@@ -47,7 +47,7 @@ public class JFrameManager {
         if (width != 0 && height != 0) frame.setSize(width, height);
         if (centerFrame) centerFrame();
 
-        Logger.info("Loaded screen " + pane.getClass().getSimpleName());
+        Logger.info("Tela " + pane.getClass().getSimpleName() + " carregada");
     }
 
     public void loadModal(Class<? extends JDialog> dialogClass, String title, Stocks stockScreen, Product product, int stockId) {
